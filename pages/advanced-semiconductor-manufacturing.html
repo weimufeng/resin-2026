@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 先进制程设备行业深度研究报告 | 全景交互图谱</title>
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f172a',    // Slate 900
+                        secondary: '#1e40af',  // Blue 800 (Tech corporate)
+                        accent: '#0284c7',     // Sky 600
+                        accent_light: '#e0f2fe',
+                        success: '#059669',    // Emerald 600
+                        warning: '#d97706',    // Amber 600
+                        background: '#f8fafc', // Slate 50
+                        surface: '#ffffff',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* <!-- Chosen Palette: Slate & Deep Corporate Blue (Reflecting high-end, precise industrial tech) -->
+        <!-- Application Structure Plan: 
+            The SPA is designed as a continuous, interactive dashboard to guide the user from macro-industry logic down to micro-economic realities.
+            - Sticky Nav: For seamless jumping between the 6 core modules.
+            - Hero: Establishes the core premise (the pinnacle of human precision engineering).
+            - Section 1 (Value Chain): A 3-column responsive CSS Grid illustrating the flow from ultra-precision components to OEMs and finally Fabs, highlighting where the profit pools sit.
+            - Section 2 (Market Size): A combo Bar/Line chart demonstrating total Wafer Fab Equipment (WFE) spend vs. the rising penetration of advanced nodes (EUV/GAA).
+            - Section 3 (Landscape): A Doughnut chart specifically dissecting the Lithography oligopoly, paired with interactive text cards for Etch and Deposition segments.
+            - Section 4 (Unit Economics): A stacked bar chart showing the lifetime value (LTV) of advanced equipment (Base price vs. decades of high-margin service/spares).
+            - Section 5 (Barriers): Interactive JavaScript tabs breaking down the "Impossible Triangle" of moats (Physics/Patents, Supply Chain, Fab Co-development).
+            - Section 6 (Capital): A Bubble chart comparing domestic substitution players vs. global monopolists on a matrix of Technology Node vs. Valuation Multiples.
+        -->
+        <!-- Visualization & Content Choices: 
+            1. Value Chain -> Goal: Organize/Hierarchy -> Method: Tailwind CSS Flex/Grid. Justification: Clearly maps the ecosystem visually without relying on external SVGs.
+            2. Market Size -> Goal: Change/Trend -> Method: Chart.js Mixed Chart. Justification: Dual axes perfectly capture overall CapEx growth against the velocity of advanced node adoption.
+            3. Landscape -> Goal: Compare/Proportion -> Method: Chart.js Doughnut. Justification: Visually reinforces the extreme CR3 concentration in this specific sector.
+            4. Unit Economics -> Goal: Inform/Breakdown -> Method: Chart.js Stacked Bar. Justification: Illustrates the "razor and blades" business model (machine + service).
+            5. Barriers -> Goal: Inform/Organize -> Method: Vanilla JS Tabs. Justification: Keeps the UI clean while allowing deep dives into dense technical moats.
+            6. Capital -> Goal: Relationships -> Method: Chart.js Bubble Chart. Justification: Shows how valuation is directly correlated to node capability (e.g., 28nm vs 2nm).
+        -->
+        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+        */
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* 强制约束的图表容器 - 满足核心 Styling Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh; /* 响应式高度 */
+            min-height: 320px;
+            max-height: 450px;
+            background: #ffffff;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 移动端图表高度适配 */
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 35vh;
+                min-height: 280px;
+            }
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* 交互式 Tab 样式 */
+        .tab-btn { transition: all 0.3s ease; }
+        .tab-btn.active {
+            border-left: 4px solid #0284c7;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent_light selection:text-primary">
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-5 h-5 bg-secondary rounded flex items-center justify-center text-white font-bold text-xs">AS</div>
+                    <span class="text-xl font-bold text-primary tracking-tight">Equip<span class="text-accent">Matrix</span></span>
+                </div>
+                <!-- 桌面端导航 -->
+                <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+                    <a href="#value-chain" class="hover:text-accent transition-colors">价值链</a>
+                    <a href="#market-size" class="hover:text-accent transition-colors">市场与驱动</a>
+                    <a href="#landscape" class="hover:text-accent transition-colors">竞争格局</a>
+                    <a href="#unit-econ" class="hover:text-accent transition-colors">单元经济</a>
+                    <a href="#barriers" class="hover:text-accent transition-colors">技术护城河</a>
+                    <a href="#capital" class="hover:text-accent transition-colors">资本市场</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <main class="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24">
+
+        <!-- Hero Section -->
+        <header class="text-center space-y-6 max-w-4xl mx-auto">
+            <div class="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 text-secondary text-xs font-bold tracking-widest uppercase border border-slate-200">
+                Semiconductor Manufacturing Equipment
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tight leading-tight">
+                先进制程设备：<br>人类精密工程的物理极限与皇冠明珠
+            </h1>
+            <p class="text-lg text-slate-600 leading-relaxed">
+                从光刻机（EUV）、刻蚀机到薄膜沉积设备，半导体前道设备构筑了万亿美元数字经济的最底层基石。本报告深度剖析该行业极度集中的寡头格局、高壁垒商业模式以及在逆全球化背景下的国产替代突围之路。
+            </p>
+        </header>
+
+        <!-- 模块 1: 行业地图与价值链 -->
+        <section id="value-chain" class="scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-primary mb-4 border-l-4 border-accent pl-4">1. 行业地图与价值链 (Value Chain)</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    本节展示半导体设备产业链的上下游流转。这是一个<strong class="text-primary">高度全球化且极其脆弱</strong>的供应链。上游是掌握独门绝技的精密零部件供应商；中游是系统集成的寡头设备商（占据最大的利润池）；下游是对先进制程产能有极致渴求的晶圆代工厂。
+                </p>
+                
+                <!-- 纯 HTML/CSS 价值链图解 -->
+                <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm">
+                    <div class="grid md:grid-cols-3 gap-6 text-center">
+                        
+                        <!-- 上游 -->
+                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 relative hover:shadow-md transition-shadow">
+                            <h3 class="font-bold text-slate-700 mb-2 uppercase text-sm tracking-wider">上游：核心零部件</h3>
+                            <p class="text-xs text-slate-500 mb-4">壁垒极深，隐形冠军聚集地</p>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-white p-2 rounded shadow-sm border border-slate-100 text-left flex justify-between">
+                                    <span class="font-semibold">光学系统/透镜</span>
+                                    <span class="text-xs text-secondary">蔡司 Zeiss</span>
+                                </div>
+                                <div class="bg-white p-2 rounded shadow-sm border border-slate-100 text-left flex justify-between">
+                                    <span class="font-semibold">极紫外光源</span>
+                                    <span class="text-xs text-secondary">Trumpf / Cymer</span>
+                                </div>
+                                <div class="bg-white p-2 rounded shadow-sm border border-slate-100 text-left flex justify-between">
+                                    <span class="font-semibold">机械手/真空阀门</span>
+                                    <span class="text-xs text-slate-400">VAT / Brooks</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 inline-block bg-slate-200 px-2 py-1 rounded text-xs font-semibold text-slate-600">毛利率：30-50%</div>
+                        </div>
+
+                        <!-- 中游 -->
+                        <div class="bg-blue-50 rounded-xl p-5 border border-blue-100 relative hover:shadow-md transition-shadow">
+                            <div class="absolute -left-4 top-1/2 transform -translate-y-1/2 text-2xl text-slate-300 hidden md:block">&#10142;</div>
+                            <h3 class="font-bold text-secondary mb-2 uppercase text-sm tracking-wider">中游：前道设备 OEM</h3>
+                            <p class="text-xs text-slate-500 mb-4">系统集成，高利润池，寡头垄断</p>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-white p-2 rounded shadow-sm border border-blue-100 text-left border-l-4 border-accent">
+                                    <span class="font-semibold block">光刻机 (Litho) - 占比25%</span>
+                                    <span class="text-xs text-slate-500">ASML (独家EUV), Nikon</span>
+                                </div>
+                                <div class="bg-white p-2 rounded shadow-sm border border-blue-100 text-left border-l-4 border-secondary">
+                                    <span class="font-semibold block">刻蚀机 (Etch) - 占比20%</span>
+                                    <span class="text-xs text-slate-500">Lam Research, 中微 AMEC</span>
+                                </div>
+                                <div class="bg-white p-2 rounded shadow-sm border border-blue-100 text-left border-l-4 border-slate-400">
+                                    <span class="font-semibold block">沉积设备 (CVD/PVD) - 占比22%</span>
+                                    <span class="text-xs text-slate-500">Applied Materials, 拓荆科技</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 inline-block bg-blue-200 px-2 py-1 rounded text-xs font-semibold text-blue-800">毛利率：45-60%+</div>
+                        </div>
+
+                        <!-- 下游 -->
+                        <div class="bg-emerald-50 rounded-xl p-5 border border-emerald-100 relative hover:shadow-md transition-shadow">
+                            <div class="absolute -left-4 top-1/2 transform -translate-y-1/2 text-2xl text-slate-300 hidden md:block">&#10142;</div>
+                            <h3 class="font-bold text-success mb-2 uppercase text-sm tracking-wider">下游：晶圆制造 Fab</h3>
+                            <p class="text-xs text-slate-500 mb-4">重资产投入，追求极致良率</p>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-white p-2 rounded shadow-sm border border-emerald-100 text-left flex justify-between items-center">
+                                    <span class="font-semibold">逻辑代工 (Logic)</span>
+                                    <span class="text-xs bg-emerald-100 text-emerald-700 px-1 rounded">先进制程主力</span>
+                                </div>
+                                <div class="bg-white p-2 rounded shadow-sm border border-emerald-100 text-left flex justify-between items-center">
+                                    <span class="font-semibold">存储器 (Memory)</span>
+                                    <span class="text-xs bg-emerald-100 text-emerald-700 px-1 rounded">3D堆叠需求</span>
+                                </div>
+                                <div class="text-xs text-slate-500 mt-2 text-left">
+                                    代表企业：TSMC, 三星, Intel, 中芯国际。每年千亿美元级 CapEx 投入。
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 2: 市场规模与驱动力 -->
+        <section id="market-size" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-primary mb-4 border-l-4 border-accent pl-4">2. 市场规模与核心驱动力 (TAM/SAM/SOM)</h2>
+            <div class="grid lg:grid-cols-2 gap-10 items-center">
+                <div class="space-y-6">
+                    <p class="text-slate-600">
+                        全球晶圆制造设备（WFE - Wafer Fab Equipment）市场是一个超千亿美元的庞然大物。其具有强烈的周期性，但长期的底座支撑异常坚固。
+                    </p>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm border-l-4 border-secondary">
+                            <h4 class="font-bold text-primary text-sm uppercase">底层驱动：AI 与先进制程渗透</h4>
+                            <p class="text-sm text-slate-600 mt-1">AI 算力芯片（GPU/NPU）激发了对 3nm/2nm 及 GAA（环绕栅极）晶体管结构的巨量需求。节点每前进一步，所需的 EUV 曝光次数和高深宽比刻蚀步骤成倍增加，直接拉升设备资本支出（CapEx）。</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm border-l-4 border-warning">
+                            <h4 class="font-bold text-primary text-sm uppercase">地缘政治：供应链重构与国产替代</h4>
+                            <p class="text-sm text-slate-600 mt-1">受出口管制影响，中国大陆正在建立独立自主的成熟制程及去美化先进制程产能（SAM）。本土设备商（如北方华创、中微公司）在存量市场的渗透率正经历从 10% 向 30%+ 的跃升（SOM）。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 图表容器 -->
+                <div class="chart-container">
+                    <canvas id="marketChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 3: 竞争格局 -->
+        <section id="landscape" class="scroll-mt-24 bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-3xl font-bold text-primary mb-6 border-l-4 border-accent pl-4">3. 竞争格局 (Landscape)：极致的寡头垄断</h2>
+            <p class="text-slate-600 mb-8 max-w-3xl">
+                前道设备是一个高度板结的存量市场。在每一个细分赛道，前三名（CR3）通常占据了 80% 甚至 100% 的份额。新玩家的切入点几乎只能依靠<strong class="text-secondary">技术范式转移（如GAA结构带来新刻蚀需求）</strong>或<strong class="text-secondary">地缘政治导致的本土化红利</strong>。
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="chart-container !border-none !shadow-none !p-0">
+                    <canvas id="landscapeChart"></canvas>
+                    <p class="text-center text-xs text-slate-400 mt-4">全球前道设备细分市场 CR3 集中度示意</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-primary text-lg flex items-center"><span class="text-2xl mr-2">&#128269;</span> 光刻机 (Lithography)</h4>
+                            <span class="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded">CR3 > 95%</span>
+                        </div>
+                        <p class="text-sm text-slate-600"><strong>ASML</strong> 占据绝对统治地位，尤其在 EUV 领域是全球唯一的供应商。Nikon 和 Canon 退守成熟制程。上海微电子（SMEE）正承担国产破局重任。</p>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-primary text-lg flex items-center"><span class="text-2xl mr-2">&#9881;</span> 刻蚀机 (Etching)</h4>
+                            <span class="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded">CR3 ~ 85%</span>
+                        </div>
+                        <p class="text-sm text-slate-600"><strong>Lam Research (泛林)</strong> 主导存储介质刻蚀，<strong>Tokyo Electron (TEL)</strong> 和 <strong>Applied Materials (AMAT)</strong> 紧随其后。增量切入点：中微公司(AMEC)的CCP刻蚀机已打入台积电先进产线，是国产替代最成功的领域。</p>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-primary text-lg flex items-center"><span class="text-2xl mr-2">&#128230;</span> 沉积设备 (Deposition)</h4>
+                            <span class="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded">CR3 ~ 75%</span>
+                        </div>
+                        <p class="text-sm text-slate-600"><strong>AMAT</strong> 统治 CVD 和 PVD 领域，<strong>ASM International</strong> 是 ALD（原子层沉积，先进制程必需）的老大。拓荆科技（CVD）和北方华创（PVD）正在国内快速放量。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 4: 商业模式与单元经济 -->
+        <section id="unit-econ" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-primary mb-6 border-l-4 border-accent pl-4">4. 商业模式与单元经济 (Unit Economics)</h2>
+            
+            <div class="grid lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-2 flex flex-col justify-center space-y-6">
+                    <p class="text-slate-600">
+                        设备大厂的收入模型被形容为 <strong class="text-primary">"剃须刀与刀片"</strong> 模式的升级版。除了高昂的初始设备销售，贯穿设备生命周期（10-20年）的服务、备件和软件升级，构筑了持续、抗周期的超高毛利现金流。
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 text-center">
+                            <div class="text-2xl font-black text-secondary mb-1">45-60%</div>
+                            <div class="text-xs text-slate-500 uppercase font-semibold">综合毛利率</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 text-center">
+                            <div class="text-2xl font-black text-accent mb-1">20-30%</div>
+                            <div class="text-xs text-slate-500 uppercase font-semibold">服务收入占比</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 text-center col-span-2">
+                            <div class="text-xl font-bold text-primary mb-1">极高的 LTV / CAC</div>
+                            <div class="text-xs text-slate-500">获客(机台验证)需数年，但成功导入后终身绑定</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 chart-container">
+                    <canvas id="unitEconChart"></canvas>
+                    <p class="text-center text-xs text-slate-400 mt-2">单台高端前道设备 10 年生命周期收入模型模拟</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 5: 技术/准入门槛 -->
+        <section id="barriers" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-primary mb-6 border-l-4 border-accent pl-4">5. 护城河与准入门槛 (Moats)</h2>
+            <p class="text-slate-600 mb-6 max-w-4xl">
+                为什么半导体设备难以被轻易颠覆？因为其壁垒不仅仅是专利，而是由时间、物理极限试验、以及上下游生态绑定交织而成的“三体系统”。
+            </p>
+
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- 左侧 Tab 按钮 -->
+                <div class="md:w-1/3 flex flex-col space-y-2">
+                    <button class="tab-btn active text-left px-5 py-4 rounded-lg border border-transparent hover:bg-slate-50" onclick="switchTab('moat-patents', this)">
+                        <span class="block font-bold text-primary text-lg mb-1">1. 专利与基础物理实验</span>
+                        <span class="text-xs text-slate-500">数十年的 Know-how 积累</span>
+                    </button>
+                    <button class="tab-btn text-left px-5 py-4 rounded-lg border border-transparent hover:bg-slate-50" onclick="switchTab('moat-supply', this)">
+                        <span class="block font-bold text-primary text-lg mb-1">2. 极限供应链控制力</span>
+                        <span class="text-xs text-slate-500">唯一的零件供应商锁定</span>
+                    </button>
+                    <button class="tab-btn text-left px-5 py-4 rounded-lg border border-transparent hover:bg-slate-50" onclick="switchTab('moat-network', this)">
+                        <span class="block font-bold text-primary text-lg mb-1">3. 晶圆厂伴生网络效应</span>
+                        <span class="text-xs text-slate-500">高试错成本导致无法替换</span>
+                    </button>
+                </div>
+
+                <!-- 右侧 Tab 内容 -->
+                <div class="md:w-2/3 bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm relative min-h-[250px]">
+                    <div id="moat-patents" class="block animate-fade-in">
+                        <h3 class="text-xl font-bold text-secondary mb-3">多学科交叉的物理/化学极限</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            制造先进制程设备不仅是工程问题，更是基础科学问题。EUV 光刻机需要控制等离子体以产生13.5nm的光波，并在真空中通过极高平整度的反射镜传输；等离子刻蚀需要在原子级别控制反应气体的浓度和能量。
+                        </p>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200 text-sm">
+                            <span class="font-semibold text-primary">护城河体现：</span>巨头公司（如 ASML, AMAT）积累了数十万项专利，新进入者在设计腔体结构、控制软件算法时，极易触碰专利雷区。这是“时间”筑起的壁垒。
+                        </div>
+                    </div>
+
+                    <div id="moat-supply" class="hidden animate-fade-in">
+                        <h3 class="text-xl font-bold text-secondary mb-3">隐形冠军的排他性绑定</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            高端设备的零部件本身也是极高门槛的技术。例如，蔡司（Zeiss）垄断了极紫外光刻所需的超高精度反光镜；特朗普（Trumpf）主导了高功率激光发生器。
+                        </p>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200 text-sm">
+                            <span class="font-semibold text-primary">护城河体现：</span>设备巨头往往通过“入股”、“独家采购协议”或“联合研发”将这些上游隐形冠军牢牢绑定。新玩家即使有资金，也买不到合格的核心零部件（这也是目前国产设备被“卡脖子”的深层原因）。
+                        </div>
+                    </div>
+
+                    <div id="moat-network" class="hidden animate-fade-in">
+                        <h3 class="text-xl font-bold text-secondary mb-3">客户验证的生死局</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            一条 3nm 产线造价高达百亿美元。如果因为一台新导入的沉积设备导致晶圆污染或良率下降，损失每天以千万美元计。因此，晶圆厂（如台积电）极度保守，极少更换已验证的机台。
+                        </p>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200 text-sm">
+                            <span class="font-semibold text-primary">护城河体现：</span>巨头与顶级 Fab 在节点研发早期（N-2年）就深度绑定，共同制定标准（Co-development）。后发者失去了在最先进产线试错和收集数据的机会，导致差距越拉越大，形成极强的网络壁垒。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 6: 资本市场表现 -->
+        <section id="capital" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-primary mb-6 border-l-4 border-accent pl-4">6. 资本市场表现 (Capital Market)</h2>
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="chart-container">
+                    <canvas id="capitalChart"></canvas>
+                </div>
+                
+                <div class="space-y-6">
+                    <p class="text-slate-600">
+                        在一二级资本市场，半导体设备企业的估值逻辑呈明显的分化：海外巨头看重盈利能力与周期拐点，而国内企业（尤其是中国大陆）则完全受“自主可控”及“技术突破节点”驱动。
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="border-l-2 border-secondary pl-4">
+                            <h4 class="font-bold text-primary text-sm">二级市场：对标估值溢价</h4>
+                            <p class="text-sm text-slate-600 mt-1">国际三巨头（AMAT, Lam, ASML）的动态 PE 通常在 20x-35x 之间（作为成熟科技硬件股定价）。而中国大陆头部设备商（如中微公司、北方华创）因享受庞大的存量替代红利，市场常给予 50x 甚至更高的 PEG/PS 估值溢价。</p>
+                        </div>
+                        
+                        <div class="border-l-2 border-accent pl-4">
+                            <h4 class="font-bold text-primary text-sm">一级市场：硬科技融资热度</h4>
+                            <p class="text-sm text-slate-600 mt-1">资金高度集中于能解决“卡脖子”环节的初创企业（如电子束检测、涂胶显影机、核心零部件）。投资机构不再看重短期盈利，而是看重是否能拿到中芯/华虹的<strong class="text-primary">验证产线 Entry Pass</strong>。</p>
+                        </div>
+
+                        <div class="border-l-2 border-success pl-4">
+                            <h4 class="font-bold text-primary text-sm">退出通道 (IPO/M&A)</h4>
+                            <p class="text-sm text-slate-600 mt-1">科创板（STAR Market）曾是国内设备商极佳的 IPO 通道。随着行业进入深水区，未来退出逻辑将转向 <strong>M&A（并购整合）</strong>——由平台型大厂（如北方华创）收购单一设备技术团队，形成类似 AMAT 的全栈平台化能力。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-primary text-slate-400 py-8 text-center text-sm border-t border-slate-800">
+        <p class="mb-2">&copy; 2026 EquipMatrix Analytics. All Rights Reserved.</p>
+        <p class="text-xs opacity-60">数据仅供交互式报告前端展示模拟，非实际投资建议。</p>
+    </footer>
+
+    <!-- JavaScript 交互与图表逻辑 -->
+    <script>
+        // Chart.js 全局配置
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+        Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: 'bold' };
+        Chart.defaults.plugins.tooltip.padding = 10;
+        Chart.defaults.plugins.tooltip.cornerRadius = 6;
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false; // 必须为 false 以适应容器
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 模块 2: Market Size (混合图表 Bar + Line) ---
+            const ctxMarket = document.getElementById('marketChart').getContext('2d');
+            new Chart(ctxMarket, {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024E', '2025E', '2026E', '2027E'],
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: '先进制程设备支出占比 (%)',
+                            data: [35, 42, 48, 55, 62, 68],
+                            borderColor: '#d97706', // warning amber
+                            backgroundColor: '#d97706',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            yAxisID: 'y1',
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        },
+                        {
+                            type: 'bar',
+                            label: '全球前道设备总规模 (十亿美元)',
+                            data: [95, 88, 102, 115, 128, 140],
+                            backgroundColor: 'rgba(30, 64, 175, 0.8)', // secondary blue
+                            borderRadius: 4,
+                            yAxisID: 'y'
+                        }
+                    ]
+                },
+                options: {
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        y: {
+                            type: 'linear', display: true, position: 'left',
+                            title: { display: true, text: '市场规模 ($B)' },
+                            grid: { borderDash: [4, 4], color: '#e2e8f0' }
+                        },
+                        y1: {
+                            type: 'linear', display: true, position: 'right',
+                            title: { display: true, text: '先进节点占比 (%)' },
+                            grid: { drawOnChartArea: false },
+                            min: 0, max: 100
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } }
+                }
+            });
+
+            // --- 模块 3: Landscape (环形图 Doughnut) ---
+            const ctxLandscape = document.getElementById('landscapeChart').getContext('2d');
+            new Chart(ctxLandscape, {
+                type: 'doughnut',
+                data: {
+                    labels: ['ASML (光刻绝对统治)', 'AMAT (沉积/检测巨头)', 'Lam Research (刻蚀龙头)', 'Tokyo Electron (涂胶显影/刻蚀)', '其他 (含中国本土初创)'],
+                    datasets: [{
+                        data: [28, 20, 15, 14, 23],
+                        backgroundColor: [
+                            '#1e40af', // secondary
+                            '#0284c7', // accent
+                            '#0f172a', // primary
+                            '#059669', // success
+                            '#cbd5e1'  // slate-300
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12, font: {size: 11} } },
+                        tooltip: { callbacks: { label: function(c) { return ` ${c.label}: ${c.raw}%`; } } }
+                    }
+                }
+            });
+
+            // --- 模块 4: Unit Economics (堆叠柱状图) ---
+            const ctxUnit = document.getElementById('unitEconChart').getContext('2d');
+            new Chart(ctxUnit, {
+                type: 'bar',
+                data: {
+                    labels: ['Year 1 (销售)', 'Year 3', 'Year 5', 'Year 7', 'Year 10 (全周期)'],
+                    datasets: [
+                        {
+                            label: '初始设备销售毛利',
+                            data: [40, 40, 40, 40, 40], // 假设基数
+                            backgroundColor: '#94a3b8' // slate
+                        },
+                        {
+                            label: '持续服务/软件升级毛利 (累计)',
+                            data: [5, 15, 30, 45, 70], // 服务收入随时间累加，毛利极高
+                            backgroundColor: '#0284c7' // accent
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { 
+                            stacked: true, 
+                            title: { display: true, text: '累积产生的毛利单位' },
+                            grid: { borderDash: [4, 4], color: '#e2e8f0' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12 } },
+                        tooltip: { mode: 'index', intersect: false }
+                    }
+                }
+            });
+
+            // --- 模块 6: Capital Market (气泡散点图) ---
+            const ctxCapital = document.getElementById('capitalChart').getContext('2d');
+            new Chart(ctxCapital, {
+                type: 'bubble',
+                data: {
+                    datasets: [
+                        {
+                            label: '国际设备巨头 (美/欧)',
+                            data: [
+                                {x: 2, y: 35, r: 25}, // ASML (2nm及以下, 较高PE, 大市值)
+                                {x: 3, y: 22, r: 20}, // AMAT
+                                {x: 3, y: 25, r: 18}  // Lam
+                            ],
+                            backgroundColor: 'rgba(30, 64, 175, 0.7)', // secondary
+                            borderColor: '#1e40af'
+                        },
+                        {
+                            label: '中国本土龙头 (已上市)',
+                            data: [
+                                {x: 14, y: 65, r: 15}, // AMEC (5nm刻蚀, 高估值)
+                                {x: 28, y: 55, r: 16}  // Naura (成熟制程为主，高估值溢价)
+                            ],
+                            backgroundColor: 'rgba(217, 119, 6, 0.7)', // warning
+                            borderColor: '#d97706'
+                        },
+                        {
+                            label: '国内一级市场明星',
+                            data: [
+                                {x: 40, y: 90, r: 8}, // 仍在验证早期，给定极高预期估值
+                                {x: 28, y: 80, r: 10}
+                            ],
+                            backgroundColor: 'rgba(5, 150, 105, 0.6)', // success
+                            borderColor: '#059669'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: { display: true, text: '核心制程能力 (纳米 nm) - 越小越先进' },
+                            reverse: true, // X轴反向，越往右越先进 (数值越小)
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: { display: true, text: '市场估值倍数 (PE Ratio)' },
+                            grid: { borderDash: [4, 4], color: '#e2e8f0' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10 } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return `${ctx.dataset.label}: 节点 ${ctx.parsed.x}nm, PE ${ctx.parsed.y}x`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Vanilla JS Tab 切换逻辑
+        function switchTab(tabId, element) {
+            // 隐藏所有内容
+            const contents = ['moat-patents', 'moat-supply', 'moat-network'];
+            contents.forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('block');
+                el.classList.add('hidden');
+            });
+
+            // 移除所有按钮的 active 状态
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // 激活当前 tab
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('block');
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>
