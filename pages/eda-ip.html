@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 EDA与半导体IP行业深度研究报告 | 全景交互图谱</title>
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind 配置与自定义颜色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2e1065',    // Violet 900 (深邃软件底座)
+                        secondary: '#9333ea',  // Purple 600 (数字逻辑)
+                        accent: '#14b8a6',     // Teal 500 (创新/生态)
+                        accent_light: '#ccfbf1',// Teal 100
+                        success: '#10b981',    // Emerald 500
+                        warning: '#f59e0b',    // Amber 500
+                        background: '#f8fafc', // Slate 50
+                        surface: '#ffffff',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* <!-- Chosen Palette: Violet (Digital Foundation) & Teal (Ecosystem/Innovation) -->
+        <!-- Application Structure Plan: 
+            The SPA is a vertical analytical dashboard designed to deconstruct the software foundation of the semiconductor world.
+            - Sticky Header: Section navigation.
+            - Hero: Establishes the core thesis (the "Leverage effect" of EDA/IP on the entire tech world).
+            - Section 1 (Value Chain): CSS Grid illustrating the "Inverted Pyramid" (how a $20B industry leverages a $3T tech economy).
+            - Section 2 (Market Size): Mixed Chart showing EDA vs IP revenue growth, highlighting AI-driven design expansion.
+            - Section 3 (Landscape): Doughnut chart mapping the "Big 3" oligopoly, paired with domestic substitution text cards.
+            - Section 4 (Unit Economics): Horizontal Bar breaking down the pure software margin structure (High R&D, ~100% Gross Margin).
+            - Section 5 (Barriers): Interactive tabs dissecting the Triple Moat (Foundry PDKs, Engineer Habits, Algorithmic Heuristics).
+            - Section 6 (Capital): Bubble chart mapping Valuation (PS multiple) vs Complete Flow capability, explaining the M&A-driven exit strategy.
+        -->
+        <!-- Visualization & Content Choices: 
+            1. Value Chain -> Goal: Inform/Hierarchy -> Method: Tailwind CSS Flex/Grid. Justification: Visualizes the leverage effect (small base, huge impact) without SVGs.
+            2. Market Size -> Goal: Trend -> Method: Chart.js Bar + Line. Justification: Tracks steady absolute growth against the rising complexity (Moore's law cost).
+            3. Landscape -> Goal: Proportions -> Method: Chart.js Doughnut. Justification: Best way to show extreme concentration (Synopsys + Cadence + Siemens = >75%).
+            4. Unit Economics -> Goal: Breakdown -> Method: Chart.js Horizontal Stacked Bar. Justification: Illustrates why EDA is valued like top-tier SaaS (high R&D, low COGS).
+            5. Barriers -> Goal: Organize text -> Method: Vanilla JS Tabs. Justification: Breaks down dense software ecosystem concepts cleanly.
+            6. Capital -> Goal: Relationships -> Method: Chart.js Bubble. Justification: Correlates M&A targets (point tools) vs Platform giants.
+        -->
+        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+        */
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* 强制约束的图表容器 (CRITICAL REQUIREMENT) */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh; /* 响应式高度 */
+            min-height: 320px;
+            max-height: 450px;
+            background: #ffffff;
+            padding: 1.25rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 35vh;
+                min-height: 280px;
+                padding: 1rem;
+            }
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* 交互式 Tab 样式 */
+        .tab-btn { transition: all 0.2s ease-in-out; }
+        .tab-btn.active {
+            border-left: 4px solid #14b8a6; /* accent */
+            background-color: #f1f5f9;
+            color: #2e1065; /* primary */
+            font-weight: 600;
+        }
+
+        /* 卡片特效 */
+        .hover-elevate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .hover-elevate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent_light selection:text-primary">
+
+    <!-- 顶部导航栏 -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-6 h-6 rounded bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xs">IP</div>
+                    <span class="text-xl font-bold text-primary tracking-tight">EDA<span class="text-secondary">Core</span> Analytics</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-500">
+                    <a href="#value-chain" class="hover:text-secondary transition-colors">杠杆生态</a>
+                    <a href="#market-size" class="hover:text-secondary transition-colors">市场与驱动</a>
+                    <a href="#landscape" class="hover:text-secondary transition-colors">寡头格局</a>
+                    <a href="#unit-econ" class="hover:text-secondary transition-colors">商业模式</a>
+                    <a href="#barriers" class="hover:text-secondary transition-colors">深水护城河</a>
+                    <a href="#capital" class="hover:text-secondary transition-colors">资本与并购</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <main class="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24">
+
+        <!-- Hero Section -->
+        <header class="text-center space-y-6 max-w-4xl mx-auto animate-fade-in">
+            <div class="inline-flex items-center px-3 py-1.5 rounded-full bg-accent_light text-accent text-xs font-bold tracking-widest uppercase mb-2">
+                Semiconductor Software Foundation
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-primary tracking-tight leading-tight">
+                EDA与半导体IP：<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">撬动三万亿数字经济的“阿基米德支点”</span>
+            </h1>
+            <p class="text-lg text-slate-600 leading-relaxed">
+                没有 EDA (电子设计自动化) 和 IP 授权，芯片设计将退回手绘图纸的石器时代。作为一个体量仅两百多亿美元的赛道，它们是整个硅基世界的法则制定者。在摩尔定律趋缓、Chiplet 与 AI 浪潮交织的今天，这里是半导体产业链中利润率最高、护城河最深、替代难度最大的终极高地。
+            </p>
+        </header>
+
+        <!-- 模块 1: 行业地图与价值链 -->
+        <section id="value-chain" class="scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-primary mb-3 flex items-center">
+                    <span class="bg-primary text-white w-8 h-8 rounded inline-flex items-center justify-center text-lg mr-3">1</span>
+                    行业地图与价值链 (Value Chain & Leverage)
+                </h2>
+                <p class="text-slate-600 leading-relaxed max-w-4xl">
+                    EDA/IP 行业呈现出极其夸张的<strong class="text-secondary">“倒金字塔”杠杆效应</strong>。基座极小，但支撑起庞大的科技生态。处于中游的软件与知识产权供应商，通过极高密度的脑力劳动，向上下游同时建立技术壁垒。
+                </p>
+            </div>
+
+            <!-- CSS 构建的杠杆金字塔图解 -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col items-center">
+                
+                <!-- 顶层：数字经济 -->
+                <div class="w-full max-w-4xl bg-slate-50 border-t-4 border-slate-300 p-4 rounded-b-lg text-center mb-2 hover-elevate">
+                    <h3 class="font-bold text-slate-700 text-lg">全球科技与数字经济</h3>
+                    <p class="text-xs text-slate-500 mb-1">AI, 智能手机, 云计算, 智能汽车</p>
+                    <div class="text-sm font-black text-slate-400">价值规模：~ $3,000,000,000,000+</div>
+                </div>
+                
+                <div class="text-slate-300 font-bold">&#8593; 支撑</div>
+
+                <!-- 中层：芯片制造与设计 -->
+                <div class="w-4/5 max-w-3xl bg-blue-50 border-t-4 border-blue-300 p-4 rounded-b-lg text-center mb-2 hover-elevate">
+                    <h3 class="font-bold text-blue-800 text-lg">全球半导体产业 (Fabless + Foundry)</h3>
+                    <p class="text-xs text-blue-600 mb-1">台积电, Nvidia, Apple, Qualcomm</p>
+                    <div class="text-sm font-black text-blue-400">价值规模：~ $600,000,000,000+</div>
+                </div>
+
+                <div class="text-secondary font-bold">&#8593; 核心授权与工具</div>
+
+                <!-- 底层：EDA/IP -->
+                <div class="w-3/5 max-w-2xl bg-purple-50 border-t-4 border-secondary p-6 rounded-b-lg text-center shadow-md relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-secondary text-white text-[10px] px-2 py-1 rounded-bl-lg font-bold">阿基米德支点</div>
+                    <h3 class="font-bold text-primary text-xl mb-3">EDA 工具与半导体 IP 核心</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-left">
+                        <div class="bg-white p-3 rounded border border-purple-100">
+                            <h4 class="font-bold text-secondary text-sm mb-1">半导体 IP (知识产权核)</h4>
+                            <ul class="text-xs text-slate-600 space-y-1">
+                                <li>• CPU/GPU 架构 (ARM)</li>
+                                <li>• 接口 IP (PCIe, DDR, USB)</li>
+                                <li>• 预先设计好的“乐高积木”</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-3 rounded border border-purple-100">
+                            <h4 class="font-bold text-secondary text-sm mb-1">EDA (电子设计自动化)</h4>
+                            <ul class="text-xs text-slate-600 space-y-1">
+                                <li>• 逻辑综合与仿真验证</li>
+                                <li>• 物理布局布线 (P&R)</li>
+                                <li>• 将数十亿晶体管转化为光刻版图</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm font-black text-secondary bg-purple-100 py-2 rounded">
+                        价值规模：仅 ~$22,000,000,000 (约220亿美元)
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 模块 2: 市场规模与驱动力 -->
+        <section id="market-size" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-primary mb-3 flex items-center">
+                <span class="bg-primary text-white w-8 h-8 rounded inline-flex items-center justify-center text-lg mr-3">2</span>
+                市场规模与增长引擎 (TAM & Drivers)
+            </h2>
+            <div class="grid lg:grid-cols-5 gap-8 items-center mt-6">
+                <div class="lg:col-span-2 space-y-5">
+                    <p class="text-slate-600">
+                        EDA与IP市场虽然绝对值不高，但增长曲线极为稳健，且不受单一芯片细分市场波动的剧烈影响。它是真正的“送水人”生意。
+                    </p>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-primary mb-3 border-b pb-2">三大超级驱动引擎：</h4>
+                        <ul class="space-y-4 text-sm text-slate-600">
+                            <li>
+                                <div class="font-bold text-secondary mb-1">⚙️ 摩尔定律的边际成本剧增</div>
+                                3nm/2nm 制程的设计成本高达 5-10 亿美元。数十亿个晶体管的物理验证，迫使芯片公司必须购买最高阶的 EDA 工具以降低流片失败率（一次失败损失数千万美元）。
+                            </li>
+                            <li>
+                                <div class="font-bold text-accent mb-1">🧩 Chiplet (芯粒) 与先进封装</div>
+                                芯片从2D向2.5D/3D堆叠，带来了极其复杂的热力学、电磁干扰（EMI）和互联设计挑战，催生了全新的系统级 EDA 需求与 Die-to-Die 接口 IP 需求。
+                            </li>
+                            <li>
+                                <div class="font-bold text-primary mb-1">🤖 AI-Assisted EDA (AI 设计芯片)</div>
+                                巨头纷纷引入 AI 强化学习算法（如 Synopsys DSO.ai），让 AI 在庞大的设计空间中自动寻找最优布局，大幅缩短研发周期并提升 PPA（性能、功耗、面积）。
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 图表容器 -->
+                <div class="lg:col-span-3 chart-container">
+                    <canvas id="marketChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 3: 竞争格局 -->
+        <section id="landscape" class="scroll-mt-24 bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-3xl font-bold text-primary mb-6 flex items-center">
+                <span class="bg-primary text-white w-8 h-8 rounded inline-flex items-center justify-center text-lg mr-3">3</span>
+                竞争格局：坚不可摧的“三巨头”与点工具突围
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-10 items-center">
+                <!-- 甜甜圈图 -->
+                <div class="chart-container !border-none !shadow-none !p-0">
+                    <canvas id="landscapeChart"></canvas>
+                    <p class="text-center text-xs text-slate-400 mt-2">全球 EDA 市场份额估算 (寡头垄断极度显著)</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-primary text-lg">全球盘面：Synopsys, Cadence, Siemens EDA</h4>
+                        <p class="text-sm text-slate-600 mt-2">
+                            这三家美国/欧洲巨头控制了全球约 <strong class="text-secondary">75%</strong> 的 EDA 市场，并提供覆盖“全流程（Full Flow）”的工具链。在 IP 领域，<strong class="text-secondary">ARM</strong> 垄断了移动端 CPU 架构，而 Synopsys 在接口 IP 领域称霸。
+                        </p>
+                    </div>
+                    
+                    <div class="border-t border-slate-100 pt-4">
+                        <h4 class="font-bold text-primary text-lg mb-3">中国本土格局与“点工具”突围</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <span class="bg-accent_light text-teal-800 text-xs font-bold px-2 py-1 rounded mr-3 mt-0.5 whitespace-nowrap">全流程破局</span>
+                                <p class="text-sm text-slate-600"><strong>华大九天 (Empyrean)：</strong> 国内规模最大的 EDA 企业，在模拟电路与平板显示（FPD）全流程设计上具备国际竞争力，但在高端数字前端仍有差距。</p>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="bg-slate-100 text-slate-700 text-xs font-bold px-2 py-1 rounded mr-3 mt-0.5 whitespace-nowrap">IP与定制</span>
+                                <p class="text-sm text-slate-600"><strong>芯原股份 (VeriSilicon)：</strong> 独创“硅晶圆即服务 (SiPaaS)”模式，拥有丰富的数字/模拟 IP 库，位列全球 IP 供应商前七。</p>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="bg-warning/20 text-warning text-xs font-bold px-2 py-1 rounded mr-3 mt-0.5 whitespace-nowrap">点工具单点爆破</span>
+                                <p class="text-sm text-slate-600">概伦电子（器件建模/SPICE仿真）、广立微（良率分析）、芯和半导体（先进封装电磁仿真）。国产策略是先在某一细分技术点做到极致，打入大客户，再逐步并购扩充战线。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 4: 商业模式与单元经济 -->
+        <section id="unit-econ" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-primary mb-3 flex items-center">
+                <span class="bg-primary text-white w-8 h-8 rounded inline-flex items-center justify-center text-lg mr-3">4</span>
+                商业模式与单元经济 (SaaS化与高毛利)
+            </h2>
+            <p class="text-slate-600 mb-6 max-w-4xl">
+                EDA 已经完成了从买断制向 <strong class="text-primary">TBL (Time-Based License，基于时间的授权)</strong> 的转型，本质是高粘性的 B2B SaaS。而 IP 则叠加了“前期授权费 + 后期版税分润”的双重护城河模型。
+            </p>
+
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <!-- 成本拆解水平堆叠图 -->
+                <div class="chart-container">
+                    <canvas id="unitEconChart"></canvas>
+                    <p class="text-center text-xs text-slate-400 mt-2">典型国际 EDA 巨头营收与成本拆解模拟</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-lg border border-slate-200 border-l-4 border-secondary">
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-bold text-primary text-sm">收入模型：TBL 与 Royalties</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">
+                            <strong>EDA：</strong>通常签订 3 年期的订阅协议（TBL），到期必须续费才能使用，产生极强的经常性收入（ARR）。<br>
+                            <strong>IP：</strong>先收一笔 NRE（授权费）给你代码，芯片量产后，每卖出一颗芯片再抽成 1%-3%（Royalty）。
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg border border-slate-200">
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-bold text-primary text-sm">夸张的毛利率 vs 沉重的研发支出</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">软件产品复制的边际成本几乎为零，<strong class="text-secondary">毛利率常年维持在 80% - 90% 以上</strong>。但为了维持技术领先，必须将营收的 <strong>30% - 40%</strong> 重新投入研发（硅谷最顶尖的数学家和物理学家），形成“高研发推高壁垒，高壁垒榨取高毛利”的循环。</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-slate-200">
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-bold text-primary text-sm">客户终身价值 (LTV > CAC)</h4>
+                        </div>
+                        <p class="text-sm text-slate-600">客户流失率（Churn Rate）极低。更换 EDA 工具意味着重新培训工程师、重写脚本库，风险不可估量。一旦打入客户供应链，LTV 几乎是无限的。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 5: 技术/准入门槛 -->
+        <section id="barriers" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-primary mb-6 flex items-center">
+                <span class="bg-primary text-white w-8 h-8 rounded inline-flex items-center justify-center text-lg mr-3">5</span>
+                核心护城河：为何极难被颠覆？
+            </h2>
+
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- 左侧：Tabs 导航 -->
+                <div class="md:w-1/3 flex flex-col space-y-2">
+                    <button class="tab-btn active text-left px-5 py-4 rounded-lg text-slate-600 hover:bg-slate-50 border border-transparent" onclick="switchTab('moat-math', this)">
+                        <span class="block font-bold text-primary mb-1">1. 数学与算法时间壁垒</span>
+                        <span class="text-xs">三十年积累的 Heuristics (启发式算法)</span>
+                    </button>
+                    <button class="tab-btn text-left px-5 py-4 rounded-lg text-slate-600 hover:bg-slate-50 border border-transparent" onclick="switchTab('moat-pdk', this)">
+                        <span class="block font-bold text-primary mb-1">2. Foundry PDK 生态墙</span>
+                        <span class="text-xs">与晶圆代工厂的深度绑定</span>
+                    </button>
+                    <button class="tab-btn text-left px-5 py-4 rounded-lg text-slate-600 hover:bg-slate-50 border border-transparent" onclick="switchTab('moat-user', this)">
+                        <span class="block font-bold text-primary mb-1">3. 用户习惯与人才生态</span>
+                        <span class="text-xs">工程师培训体系的垄断</span>
+                    </button>
+                </div>
+
+                <!-- 右侧：Tabs 内容区 -->
+                <div class="md:w-2/3 bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-[250px] relative">
+                    <!-- Tab 1 -->
+                    <div id="moat-math" class="tab-content block animate-fade-in">
+                        <div class="w-10 h-10 rounded bg-purple-100 flex items-center justify-center text-secondary mb-4 font-bold text-xl">∑</div>
+                        <h3 class="text-xl font-bold text-primary mb-3">底层数学引擎与启发式算法</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">
+                            EDA 解决的是极度复杂的图论和 NP-Hard 问题（例如在指甲盖大小的硅片上连线几十亿个晶体管，且不能有电磁干扰）。巨头们在过去 30 年中积累了无数的 <strong class="text-secondary">启发式规则（Heuristics）和底层求解器（Solvers）</strong>代码。这些“祖传代码”是靠无数次失败的流片经验“喂”出来的，新进入者无法仅凭数学公式弯道超车。
+                        </p>
+                    </div>
+                    <!-- Tab 2 -->
+                    <div id="moat-pdk" class="tab-content hidden animate-fade-in">
+                        <div class="w-10 h-10 rounded bg-blue-100 flex items-center justify-center text-blue-700 mb-4 font-bold text-xl">🏭</div>
+                        <h3 class="text-xl font-bold text-primary mb-3">代工厂 PDK (Process Design Kit) 认证</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">
+                            这是 EDA 行业最硬的物理墙。EDA 软件跑出来的图纸，必须能在台积电（TSMC）的机台上完美制造出来。代工厂会将自身的工艺参数（线宽、阻容等）打包成 PDK 提供给 EDA 厂商。<strong>如果不经过头部 Foundry 极其严苛且耗时数年的认证，EDA 软件对客户而言就是一张废纸。</strong> 巨头拥有最全、最新的 Foundry 节点认证池。
+                        </p>
+                    </div>
+                    <!-- Tab 3 -->
+                    <div id="moat-user" class="tab-content hidden animate-fade-in">
+                        <div class="w-10 h-10 rounded bg-teal-100 flex items-center justify-center text-accent mb-4 font-bold text-xl">👨‍💻</div>
+                        <h3 class="text-xl font-bold text-primary mb-3">工程师操作习惯的闭环</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">
+                            巨头们垄断了全球高校的微电子专业实验室。一个工程师从大一开始就使用 Cadence/Synopsys 的界面，学习其专属的脚本语言（如 TCL）。当他进入职场，绝不愿意冒着出错的风险去切换一个界面陌生、报错信息看不懂的新国产软件。这种基于<strong>操作习惯和人才供给</strong>的生态壁垒极难打破。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 6: 资本市场表现 -->
+        <section id="capital" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-primary mb-3 flex items-center">
+                <span class="bg-primary text-white w-8 h-8 rounded inline-flex items-center justify-center text-lg mr-3">6</span>
+                资本市场：高溢价估值与疯狂的 M&A
+            </h2>
+            <div class="grid lg:grid-cols-2 gap-8 items-start mt-6">
+                <!-- 气泡图 -->
+                <div class="chart-container">
+                    <canvas id="capitalChart"></canvas>
+                </div>
+                
+                <div class="space-y-6">
+                    <p class="text-slate-600">
+                        资本市场对 EDA/IP 行业的定价逻辑非常清晰：它不仅是半导体股，更是顶级的 SaaS 软件股。
+                    </p>
+                    
+                    <div class="border-l-4 border-secondary pl-4 py-1">
+                        <h4 class="font-bold text-primary text-sm">二级市场：SaaS 级的高估值体系</h4>
+                        <p class="text-sm text-slate-600 mt-2">
+                            国际三巨头的市盈率（PE）通常维持在 50x-70x 之间，市销率（PS）常超 10x。资本看重的是其极高的 ARR（年度经常性收入）、不可替代性以及 AI 赋予的新一轮提价能力。
+                        </p>
+                    </div>
+
+                    <div class="border-l-4 border-accent pl-4 py-1">
+                        <h4 class="font-bold text-primary text-sm">核心生存法则：M&A (并购重组)</h4>
+                        <p class="text-sm text-slate-600 mt-2">
+                            EDA 的发展史就是一部并购史（Synopsys 与 Cadence 各自进行了上百次并购）。因为底层数学工具极其细分（点工具多达几十种）。巨头的策略是：一旦市场上出现某个创新的“点工具”初创公司威胁到自身流程，就立刻溢价收购，将其整合进自己的全流程平台中。
+                        </p>
+                    </div>
+                    
+                    <div class="border-l-4 border-warning pl-4 py-1">
+                        <h4 class="font-bold text-primary text-sm">一级市场退出通道</h4>
+                        <p class="text-sm text-slate-600 mt-2">
+                            对于国内初创 EDA 企业，目前在一级市场依然享受“国产替代”的超高溢价。但长期来看，除了极少数能走完 IPO 独立成为平台型公司的龙头外，<strong class="text-primary">被国内平台型巨头（如华大九天）并购整合</strong>，将是超过 80% 细分点工具创业公司的最终且最优退出路径。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-primary text-slate-400 py-10 text-center text-sm border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-semibold text-slate-300 mb-2">EDACore Analytics © 2026. Interactive Insight Report.</p>
+            <p class="text-xs max-w-2xl mx-auto opacity-70">
+                本报告内容及图表数据为基于行业研究模型的示意性交互展示，非实际财务披露与投资建议。主要用于演示复杂信息的单页架构(SPA)前端交互呈现方案。
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript 交互与图表逻辑 -->
+    <script>
+        // Chart.js 全局默认配置
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#64748b'; // slate-500
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(46, 16, 101, 0.9)'; // primary violet
+        Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: 'bold' };
+        Chart.defaults.plugins.tooltip.padding = 10;
+        Chart.defaults.plugins.tooltip.cornerRadius = 6;
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false; // 必须为 false 以适应容器
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Chart 1: Market Size (Mixed Bar/Line) ---
+            const ctxMarket = document.getElementById('marketChart').getContext('2d');
+            new Chart(ctxMarket, {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024E', '2025E', '2026E', '2028E'],
+                    datasets: [
+                        {
+                            type: 'line',
+                            label: '半导体 IP 市场规模 ($B)',
+                            data: [6.5, 7.2, 8.1, 9.3, 10.5, 13.0],
+                            borderColor: '#14b8a6', // accent (teal)
+                            backgroundColor: '#14b8a6',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            yAxisID: 'y1',
+                            pointBackgroundColor: 'white',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        },
+                        {
+                            type: 'bar',
+                            label: '全球 EDA 软件市场规模 ($B)',
+                            data: [13.5, 14.8, 16.5, 18.2, 20.5, 25.0],
+                            backgroundColor: 'rgba(147, 51, 234, 0.7)', // secondary (purple)
+                            borderRadius: 4,
+                            yAxisID: 'y'
+                        }
+                    ]
+                },
+                options: {
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        y: {
+                            type: 'linear', display: true, position: 'left',
+                            title: { display: true, text: 'EDA 规模 ($B)' },
+                            grid: { borderDash: [4, 4], color: '#f1f5f9' },
+                            min: 0
+                        },
+                        y1: {
+                            type: 'linear', display: true, position: 'right',
+                            title: { display: true, text: 'IP 规模 ($B)' },
+                            grid: { drawOnChartArea: false },
+                            min: 0
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } }
+                    }
+                }
+            });
+
+            // --- Chart 2: Landscape (Doughnut) ---
+            const ctxLandscape = document.getElementById('landscapeChart').getContext('2d');
+            new Chart(ctxLandscape, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Synopsys (新思科技)', 'Cadence (楷登电子)', 'Siemens EDA (西门子)', 'Ansys (仿真巨头)', '其他 (含中国本土)'],
+                    datasets: [{
+                        data: [32, 30, 14, 10, 14],
+                        backgroundColor: [
+                            '#2e1065', // primary violet
+                            '#9333ea', // secondary purple
+                            '#14b8a6', // accent teal
+                            '#f59e0b', // warning amber
+                            '#cbd5e1'  // slate
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    cutout: '65%',
+                    plugins: {
+                        legend: { 
+                            position: 'right',
+                            labels: { boxWidth: 12, font: { size: 11 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return ` ${context.label}: ${context.parsed}%`; }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // --- Chart 3: Unit Economics (Horizontal Stacked Bar) ---
+            const ctxUnitEcon = document.getElementById('unitEconChart').getContext('2d');
+            new Chart(ctxUnitEcon, {
+                type: 'bar',
+                data: {
+                    labels: ['营收 100% 的成本与利润解构'],
+                    datasets: [
+                        { label: '销货成本 (COGS, 云资源等)', data: [15], backgroundColor: '#94a3b8' }, // slate
+                        { label: '研发支出 (R&D)', data: [35], backgroundColor: '#9333ea' }, // secondary purple
+                        { label: '销售与管理 (SG&A)', data: [20], backgroundColor: '#14b8a6' }, // accent teal
+                        { label: '净利润率 (Net Margin)', data: [30], backgroundColor: '#2e1065' } // primary violet
+                    ]
+                },
+                options: {
+                    indexAxis: 'y', // 水平图
+                    scales: {
+                        x: { 
+                            stacked: true, 
+                            title: { display: true, text: '营收占比 (%)' },
+                            max: 100 
+                        },
+                        y: { stacked: true, display: false, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: {size: 11} } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return ` ${context.dataset.label}: ${context.parsed.x}%`; }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // --- Chart 4: Capital Markets (Bubble Chart) ---
+            const ctxCapital = document.getElementById('capitalChart').getContext('2d');
+            new Chart(ctxCapital, {
+                type: 'bubble',
+                data: {
+                    datasets: [
+                        {
+                            label: '国际全流程平台巨头',
+                            data: [
+                                { x: 95, y: 15, r: 40 }, // Synopsys (产品线极全，高PS)
+                                { x: 90, y: 14, r: 35 }  // Cadence
+                            ],
+                            backgroundColor: 'rgba(147, 51, 234, 0.7)', // purple
+                            borderColor: '#9333ea'
+                        },
+                        {
+                            label: '国内平台型龙头',
+                            data: [
+                                { x: 60, y: 25, r: 20 } // 华大九天等，部分全流程，极高估值溢价
+                            ],
+                            backgroundColor: 'rgba(20, 184, 166, 0.7)', // teal
+                            borderColor: '#14b8a6'
+                        },
+                        {
+                            label: '专精“点工具”初创企业 (M&A标的)',
+                            data: [
+                                { x: 20, y: 8, r: 10 },  // 单一仿真工具
+                                { x: 30, y: 12, r: 15 }, // 后端良率分析
+                                { x: 15, y: 10, r: 8 }   // 特定IP核心
+                            ],
+                            backgroundColor: 'rgba(245, 158, 11, 0.6)', // amber
+                            borderColor: '#f59e0b'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: { display: true, text: '产品线完整度 (单一点工具 -> Full Flow 全流程)' },
+                            min: 0, max: 100,
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: { display: true, text: '市场估值倍数 (PS 销率倍数)' },
+                            min: 0,
+                            grid: { borderDash: [4, 4], color: '#f1f5f9' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 10 } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: 完整度 ${context.parsed.x}, PS ${context.parsed.y}x`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // --- Tabs 交互逻辑 (Vanilla JS) ---
+        window.switchTab = function(tabId, element) {
+            // 隐藏所有 tab-content
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+            
+            // 移除所有 tab-btn 的 active 状态
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('border-transparent');
+            });
+            
+            // 显示选中的 content 并激活按钮
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('block');
+            element.classList.add('active');
+            element.classList.remove('border-transparent');
+        };
+    </script>
+</body>
+</html>
