@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聚苯醚树脂（PPE/PPO）行业深度交互式报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Styles & Chart Container Enforcement */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #2563eb; /* Tailwind blue-600 */
+            border-bottom: 2px solid #2563eb;
+        }
+        
+        /* Interactive Toggle Styles */
+        .toggle-btn.active {
+            background-color: #2563eb;
+            color: white;
+        }
+        .toggle-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .toggle-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Value Chain CSS Shapes */
+        .vc-node {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .vc-node:hover {
+            transform: translateY(-5px);
+        }
+        .vc-arrow {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            margin: 0 1rem;
+        }
+    </style>
+    
+    <!-- Chosen Palette: Slate Backgrounds (slate-50, slate-100), Blue Accents (blue-600, blue-100) for trust and technology, Emerald (emerald-500) for growth metrics. -->
+    
+    <!-- Application Structure Plan: 
+         - A fixed top navigation bar allows quick jumping between the 7 core modules.
+         - A Hero section provides immediate context and high-level KPIs.
+         - Content is structured linearly but highly sectioned (dashboard style) so users can scroll to discover the narrative.
+         - Interactive Tabs in "Overview" let users compare Pure vs Modified PPO.
+         - Visual flowcharts (using HTML/CSS, not SVG) explain the Value Chain.
+         - Chart.js renders Market Size, Application Splits, and Competitive Share, making data digestible.
+         - Cards and grids organize textual information (Barriers, Unit Economics) to prevent text fatigue. 
+         This structure converts a dense PDF report into an explorable, bite-sized digital experience. -->
+
+    <!-- Visualization & Content Choices:
+         - Market Size: Bar chart + Line chart (CAGR overlay) via Chart.js to show absolute growth and trend.
+         - Applications: Doughnut chart to clearly show proportion of downstream uses (5G, Auto, etc.).
+         - Competitive Landscape: Pie chart to emphasize the oligopoly (CR3/CR5).
+         - Value Chain: HTML Flexbox with CSS styling. Goal is to show directional flow without using SVG.
+         - Interactive Toggles: Used for comparing Material Properties (Pure vs MPPO) to engage the user actively.
+         - CSS Grids: Used for Unit Economics and Barriers to structure dense text logically. -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <!-- Navigation -->
+    <header class="bg-white shadow-md fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="font-bold text-xl text-blue-700 uppercase tracking-wider">PPE/PPO 行业智库</span>
+                </div>
+                <div class="hidden md:flex space-x-8 overflow-x-auto">
+                    <a href="#overview" class="nav-link text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">1. 领域介绍</a>
+                    <a href="#valuechain" class="nav-link text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">2. 产业链</a>
+                    <a href="#market" class="nav-link text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">3. 市场规模</a>
+                    <a href="#landscape" class="nav-link text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">4. 竞争格局</a>
+                    <a href="#economics" class="nav-link text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">5. 商业模式</a>
+                    <a href="#barriers" class="nav-link text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">6. 技术门槛</a>
+                    <a href="#capital" class="nav-link text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">7. 资本市场</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-12">
+        
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="bg-white rounded-2xl shadow-lg p-8 border-l-8 border-blue-600">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">全球与中国聚苯醚（PPE/PPO）行业深度研究报告</h1>
+                <p class="text-lg text-slate-600 mb-8">
+                    聚苯醚（Polyphenylene Ether, 简称PPE或PPO）是世界五大通用工程塑料之一，以其优异的耐热性、电性能和尺寸稳定性著称。在5G高频高速覆铜板、新能源汽车及光伏领域的强力驱动下，PPO行业正迎来新一轮的高质量增长期与国产替代浪潮。
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                        <div class="text-sm text-slate-500 mb-1">全球市场规模预估 (2025E)</div>
+                        <div class="text-2xl font-bold text-blue-600">~ 20 亿美元</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                        <div class="text-sm text-slate-500 mb-1">复合年增长率 (CAGR)</div>
+                        <div class="text-2xl font-bold text-emerald-500">6.5% +</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                        <div class="text-sm text-slate-500 mb-1">市场集中度 (CR5)</div>
+                        <div class="text-2xl font-bold text-blue-600">80% +</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                        <div class="text-sm text-slate-500 mb-1">核心驱动力</div>
+                        <div class="text-xl font-bold text-slate-800">5G基站 & 新能源车</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. 领域详细介绍 -->
+        <section id="overview" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm mr-3">模块 1</span>
+                领域详细介绍：高频时代的基石材料
+            </h2>
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <p class="text-slate-600 mb-4">
+                    <strong>历史发展：</strong>聚苯醚由通用电气（GE塑料，现SABIC）于1956年发明，并在1960年代实现商业化。由于纯PPO熔融流动性极差、加工困难，通常将其与聚苯乙烯（PS）或聚酰胺（PA）进行共混改性（MPPO/MPPE）后使用。<br>
+                    <strong>学术与技术：</strong>PPO由2,6-二甲苯酚在催化剂作用下进行氧化偶合聚合而成。近年来，学术界和产业界的研发重点已从基础合成转向<strong>低分子量/电子级PPO</strong>的开发，以满足5G/6G极低介电常数（Dk）和介电损耗（Df）的要求。
+                </p>
+                
+                <!-- Interactive Toggle -->
+                <div class="mt-8 border border-slate-200 rounded-lg overflow-hidden">
+                    <div class="flex border-b border-slate-200 bg-slate-50">
+                        <button class="toggle-btn active flex-1 py-3 text-sm font-semibold transition-colors focus:outline-none" onclick="toggleMaterial('pure')">纯 PPO 树脂</button>
+                        <button class="toggle-btn flex-1 py-3 text-sm font-semibold transition-colors focus:outline-none" onclick="toggleMaterial('modified')">改性 PPO (MPPO)</button>
+                        <button class="toggle-btn flex-1 py-3 text-sm font-semibold transition-colors focus:outline-none" onclick="toggleMaterial('electronic')">电子级低分子量 PPO</button>
+                    </div>
+                    <div class="p-6">
+                        <div id="content-pure" class="toggle-content active">
+                            <h4 class="font-bold text-slate-800 mb-2">纯聚苯醚 (Pure PPO)</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li><strong>特性：</strong>具有极高的玻璃化转变温度（约210℃），无毒、密度小。介电常数在工程塑料中最小。</li>
+                                <li><strong>痛点：</strong>熔融粘度极高，难以注塑成型；易发生应力开裂。</li>
+                                <li><strong>应用：</strong>极少直接使用，作为改性基料。</li>
+                            </ul>
+                        </div>
+                        <div id="content-modified" class="toggle-content">
+                            <h4 class="font-bold text-slate-800 mb-2">改性聚苯醚 (MPPO/MPPE)</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li><strong>特性：</strong>通过与HIPS、PA、PP等掺混，大幅改善加工性能，同时保留了优异的尺寸稳定性和耐水性。</li>
+                                <li><strong>应用：</strong>汽车仪表盘、水处理阀门、光伏接线盒、家用电器外壳。</li>
+                                <li><strong>市场地位：</strong>目前市场交易量的绝对主力。</li>
+                            </ul>
+                        </div>
+                        <div id="content-electronic" class="toggle-content">
+                            <h4 class="font-bold text-slate-800 mb-2">电子级低分子量 PPO</h4>
+                            <ul class="list-disc pl-5 text-slate-600 space-y-1">
+                                <li><strong>特性：</strong>通过再分配反应降低分子量，并在两端引入活性基团（如甲基丙烯酸酯基），具备可交联性。</li>
+                                <li><strong>核心优势：</strong>固化后具有极低的Dk/Df值，是高频高速通信的理想树脂。</li>
+                                <li><strong>应用：</strong>M6/M7/M8级别高端覆铜板（CCL）、AI服务器主板。<strong>行业增速最快的细分领域。</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 行业地图与价值链 -->
+        <section id="valuechain" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-slate-100 rounded-3xl">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm mr-3">模块 2</span>
+                行业地图与价值链 (Value Chain)
+            </h2>
+            <p class="text-slate-600 mb-8">PPO产业链呈现"上游化工原料大宗化、中游合成壁垒极高、下游应用高端化"的特征。利润高度集中在中游掌握核心合成及高端改性技术的寡头手中。</p>
+            
+            <!-- Value Chain Diagram (HTML/CSS Based) -->
+            <div class="flex flex-col md:flex-row justify-between items-center w-full max-w-5xl mx-auto space-y-4 md:space-y-0">
+                
+                <!-- Upstream -->
+                <div class="w-full md:w-1/4">
+                    <div class="bg-white border-t-4 border-slate-400 vc-node flex-col h-full">
+                        <span class="text-sm text-slate-500 mb-2">上游 (原材料)</span>
+                        <span class="font-bold text-slate-800">苯酚 + 甲醇</span>
+                        <div class="text-xs text-slate-400 mt-2">合成 2,6-二甲苯酚<br>(大宗化工，竞争充分)</div>
+                        <div class="mt-4 text-xs font-semibold text-red-500">毛利率: 10%-15%</div>
+                    </div>
+                </div>
+
+                <div class="vc-arrow hidden md:block">→</div>
+                <div class="vc-arrow md:hidden transform rotate-90">→</div>
+
+                <!-- Midstream -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white border-t-4 border-blue-600 vc-node flex-col h-full ring-2 ring-blue-100">
+                        <span class="text-sm text-blue-600 mb-2">中游 (核心环节)</span>
+                        <span class="font-bold text-slate-800 text-lg">PPO树脂合成 & 改性</span>
+                        <div class="text-xs text-slate-500 mt-2 text-left">
+                            • 氧化偶合聚合 (基础PPO)<br>
+                            • 再分配技术 (低分子量PPO)<br>
+                            • 共混改性 (MPPO)
+                        </div>
+                        <div class="mt-4 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">利润池核心 (毛利: 30%-50%+)</div>
+                    </div>
+                </div>
+
+                <div class="vc-arrow hidden md:block">→</div>
+                <div class="vc-arrow md:hidden transform rotate-90">→</div>
+
+                <!-- Downstream -->
+                <div class="w-full md:w-1/3">
+                    <div class="bg-white border-t-4 border-emerald-500 vc-node flex-col h-full">
+                        <span class="text-sm text-emerald-600 mb-2">下游 (终端应用)</span>
+                        <div class="grid grid-cols-2 gap-2 w-full mt-2">
+                            <div class="bg-slate-50 p-2 text-xs rounded">高频覆铜板 (5G/AI)</div>
+                            <div class="bg-slate-50 p-2 text-xs rounded">新能源车 (电池壳/接插件)</div>
+                            <div class="bg-slate-50 p-2 text-xs rounded">光伏接线盒</div>
+                            <div class="bg-slate-50 p-2 text-xs rounded">水处理设备</div>
+                        </div>
+                        <div class="mt-4 text-xs font-semibold text-blue-500">高壁垒客户认证 (LTV极高)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 市场规模与驱动力 -->
+        <section id="market" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm mr-3">模块 3</span>
+                市场规模与驱动力 (TAM/SAM/SOM)
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Market Size Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-lg mb-4 text-center">全球PPO需求量走势 (万吨)</h3>
+                    <div class="chart-container">
+                        <canvas id="marketSizeChart"></canvas>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-4 text-center">数据来源：行业研报整合预估。总体保持稳健增长，电子级PPO增速远超行业平均。</p>
+                </div>
+                
+                <!-- Drivers Text -->
+                <div class="flex flex-col justify-center">
+                    <h3 class="font-bold text-xl mb-4 text-slate-800">核心增长引擎</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 bg-blue-100 text-blue-600 p-2 rounded-lg mr-4">📡</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">技术驱动：5G/6G与AI服务器 (增量爆点)</h4>
+                                <p class="text-sm text-slate-600">AI服务器（如Nvidia DGX系统）和高速交换机需要极低损耗的PCB。M6及以上等级的覆铜板几乎必须使用低分子量PPO进行固化交联。此细分市场CAGR > 15%。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 bg-emerald-100 text-emerald-600 p-2 rounded-lg mr-4">🔋</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">技术替代：新能源汽车 (三电系统)</h4>
+                                <p class="text-sm text-slate-600">MPPO具备优异的耐电痕化、尺寸稳定性和无卤阻燃特性，正在替代传统的PA和PBT，用于电池包外壳、高压连接器和充电枪领域。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 bg-red-100 text-red-600 p-2 rounded-lg mr-4">🇨🇳</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">政策/地缘：中国市场的国产替代</h4>
+                                <p class="text-sm text-slate-600">过去SABIC垄断高端市场。随着供应链安全需求提升，中国国内高端覆铜板厂（如生益科技、南亚新材）迫切寻求PPO国产供应商，为国内化工巨头打开SAM空间。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 竞争格局 -->
+        <section id="landscape" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-white">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm mr-3">模块 4</span>
+                竞争格局 (Landscape)
+            </h2>
+            <p class="text-slate-600 mb-6">PPO行业是一个典型的寡头垄断市场。由于极高的技术壁垒和资金壁垒，存量市场高度集中，增量市场（电子级）正成为新玩家的切入点。</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <!-- Market Share Doughnut -->
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                    <h3 class="font-bold text-lg mb-4 text-center">全球PPO产能份额分布预估</h3>
+                    <div class="chart-container">
+                        <canvas id="marketShareChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Competitor Table -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">企业阵营</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">代表企业</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">战略定位与切入点</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">国际巨头 (垄断者)</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">SABIC, 旭化成 (Asahi Kasei)</td>
+                                <td class="px-6 py-4 text-sm text-slate-500">掌握核心专利，占据全球大半产能与高端电子级/汽车级市场绝对份额。护城河深。</td>
+                            </tr>
+                            <tr class="bg-slate-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">国内老牌力量</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">中国化工蓝星, 鑫宝新材</td>
+                                <td class="px-6 py-4 text-sm text-slate-500">解决国内"有无"问题，主要占据中低端水处理、家电等改性MPPO存量市场。</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">国产破局者</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">万华化学, 东材科技, 圣泉集团</td>
+                                <td class="px-6 py-4 text-sm text-slate-500"><span class="text-emerald-600 font-bold">增量切入点：</span>针对AI和5G需求，攻克双端羟基/甲基丙烯酸酯基低分子量PPO，通过验证进入核心供应链。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 商业模式与单元经济 -->
+        <section id="economics" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm mr-3">模块 5</span>
+                商业模式与单元经济 (Unit Economics)
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Revenue Model -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-3xl text-blue-500 mb-3">💰</div>
+                    <h3 class="font-bold text-lg mb-2">收入模型 (B2B直销+经销)</h3>
+                    <p class="text-sm text-slate-600">采用"大宗+特种"混合模式。<br>基础PPO树脂采用成本加成定价；<br>高端电子级PPO及定制化改性料（MPPO）采用价值定价法，与客户联合开发（JDP）。</p>
+                </div>
+                
+                <!-- Unit Economics -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-3xl text-emerald-500 mb-3">📈</div>
+                    <h3 class="font-bold text-lg mb-2">毛利水平的分化</h3>
+                    <ul class="text-sm text-slate-600 space-y-2 mt-2">
+                        <li class="flex justify-between border-b pb-1"><span>中低端改性PPO:</span> <span class="font-bold">15% - 20%</span></li>
+                        <li class="flex justify-between border-b pb-1"><span>高品质基础树脂:</span> <span class="font-bold">25% - 35%</span></li>
+                        <li class="flex justify-between"><span>电子级低分子PPO:</span> <span class="font-bold text-emerald-600">50% - 60%+</span></li>
+                    </ul>
+                    <p class="text-xs text-slate-400 mt-2">高端产品呈暴利特征，因为研发与认证沉没成本极高。</p>
+                </div>
+
+                <!-- CAC & LTV -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <div class="text-3xl text-purple-500 mb-3">🔗</div>
+                    <h3 class="font-bold text-lg mb-2">CAC与LTV</h3>
+                    <p class="text-sm text-slate-600">
+                        <strong>获客成本 (CAC)：极高。</strong>在覆铜板和汽车领域，材料认证周期长达1-3年，需经历配方调试、中试、终端客户（如华为、苹果、特斯拉）审批。<br>
+                        <strong>生命周期价值 (LTV)：极长。</strong>一旦切入BOM表，由于转换成本极高（重新认证风险大），客户粘性极强，带来稳定持续的现金流。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. 技术/准入门槛 -->
+        <section id="barriers" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-slate-800 text-white rounded-3xl">
+            <h2 class="text-2xl font-bold mb-8 flex items-center text-white">
+                <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm mr-3">模块 6</span>
+                技术/准入门槛：深邃的护城河
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-blue-300 mb-3 border-b border-slate-600 pb-2">01. 专利与know-how</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        SABIC通过长期布局形成了庞大的专利网。即使核心专利过期，由于聚合过程涉及复杂的<strong>催化剂配方（铜氨络合物等）</strong>、反应器设计、精准控温以及副产物分离等隐性know-how，新进者极难在短时间内稳定产出高品质、批次一致性好的产品。
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-blue-300 mb-3 border-b border-slate-600 pb-2">02. 供应链与环保壁垒</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        <strong>原料自给：</strong>核心单体2,6-二甲苯酚的供应稳定性至关重要。拥有上游化工产业链一体化优势的企业（如万华）能有效平抑成本。<br>
+                        <strong>环保审批：</strong>PPO生产过程涉及大量溶剂（如甲苯）的循环利用及废水处理，在双碳背景下，新建产能环评审批极严，限制了中小企业入局。
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-blue-300 mb-3 border-b border-slate-600 pb-2">03. 改性与终端网络效应</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        纯PPO树脂无价值，必须依托<strong>改性配方库</strong>。领先企业拥有数千种定制配方。随着应用案例增多，厂商积累的数据越多，开发新配方越快，形成强者恒强的"配方网络效应"。终端验证的壁垒构筑了强大的客户转换成本。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. 资本市场表现 -->
+        <section id="capital" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm mr-3">模块 7</span>
+                资本市场表现：一级热点与二级龙头
+            </h2>
+            
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-1/2 bg-white p-6 border-l-4 border-purple-500 rounded-r-lg shadow-sm">
+                    <h3 class="font-bold text-lg text-slate-800 mb-3">一级市场 (VC/PE)：聚焦"专精特新"</h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        传统的大宗PPO合成投资热度极低（因为Capex太高且寡头垄断）。目前一级资本的钱主要流向：<br>
+                        1. <strong>高端改性材料初创企业</strong>：专注高频高速/半导体封装的改性厂。<br>
+                        2. <strong>电子级树脂破局者</strong>：能规模量产M6+级别低分子量PPO及相关固化剂的公司，常获半导体/硬科技基金追捧。<br>
+                        <strong>退出通道：</strong>主要瞄准科创板/创业板IPO，或被大型化工新材料上市公司（M&A）溢价并购。
+                    </p>
+                </div>
+                
+                <div class="w-full md:w-1/2 bg-white p-6 border-l-4 border-blue-500 rounded-r-lg shadow-sm">
+                    <h3 class="font-bold text-lg text-slate-800 mb-3">二级市场：寻找国产替代的"阿尔法"</h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        二级市场目前没有纯粹的PPO上市公司，相关概念股主要分为两类：<br>
+                        1. <strong>平台型化工巨头 (如万华化学)</strong>：通过产业链一体化拓展PPO，市场给出的估值逻辑是基于其新材料平台的持续造血能力（PE中枢 12-18x）。<br>
+                        2. <strong>PCB上游材料平台 (如东材科技, 圣泉集团)</strong>：随着其电子级PPO研发突破并导入主流覆铜板厂，市场视其为"AI硬件算力概念股"，给予较高的估值溢价（PE中枢可达 25-40x）。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm">
+        <p>© 2026 PPO Industry Analysis Dashboard. Created via Single Page Interactive Architecture.</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Interactive Tabs Logic (Vanilla JS) ---
+        function toggleMaterial(type) {
+            // Update Buttons
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update Content
+            document.querySelectorAll('.toggle-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('content-' + type).classList.add('active');
+        }
+
+        // --- 2. Scroll Spy / Navigation Highlight (Vanilla JS) ---
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // --- 3. Chart.js Implementations ---
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Shared Tooltip Config
+            const tooltipConfig = {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleFont: { size: 14 },
+                bodyFont: { size: 13 },
+                padding: 10,
+                cornerRadius: 4,
+                displayColors: true
+            };
+
+            // Chart 1: Market Size (Bar + Line)
+            const ctxSize = document.getElementById('marketSizeChart').getContext('2d');
+            new Chart(ctxSize, {
+                type: 'bar',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024E', '2025E', '2026E'],
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: '全球市场需求量 (万吨)',
+                            data: [35, 38, 40, 41, 44, 47, 51],
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)', // blue-500
+                            borderColor: 'rgb(37, 99, 235)', // blue-600
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            order: 2
+                        },
+                        {
+                            type: 'line',
+                            label: '同比增速 (%)',
+                            data: [null, 8.5, 5.2, 2.5, 7.3, 6.8, 8.5],
+                            borderColor: 'rgb(16, 185, 129)', // emerald-500
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgb(16, 185, 129)',
+                            yAxisID: 'y1',
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: tooltipConfig
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: '需求量 (万吨)' }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: '增速 (%)' },
+                            suggestedMax: 15
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Market Share (Doughnut)
+            const ctxShare = document.getElementById('marketShareChart').getContext('2d');
+            new Chart(ctxShare, {
+                type: 'doughnut',
+                data: {
+                    labels: ['SABIC (垄断者)', 'Asahi Kasei (日系巨头)', '中国化工蓝星 (国内老牌)', '万华化学 (国产新锐)', '其他'],
+                    datasets: [{
+                        data: [45, 18, 15, 8, 14],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.8)',   // blue-600
+                            'rgba(96, 165, 250, 0.8)',  // blue-400
+                            'rgba(148, 163, 184, 0.8)', // slate-400
+                            'rgba(16, 185, 129, 0.8)',  // emerald-500 (highlight)
+                            'rgba(226, 232, 240, 0.8)'  // slate-200
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                generateLabels: function(chart) {
+                                    // Custom label generation to wrap long text if needed
+                                    const data = chart.data;
+                                    if (data.labels.length && data.datasets.length) {
+                                        return data.labels.map((label, i) => {
+                                            const meta = chart.getDatasetMeta(0);
+                                            const style = meta.controller.getStyle(i);
+                                            return {
+                                                text: label.length > 16 ? label.substring(0, 16) + '...' : label,
+                                                fillStyle: style.backgroundColor,
+                                                strokeStyle: style.borderColor,
+                                                lineWidth: style.borderWidth,
+                                                hidden: isNaN(data.datasets[0].data[i]) || meta.data[i].hidden,
+                                                index: i
+                                            };
+                                        });
+                                    }
+                                    return [];
+                                }
+                            }
+                        },
+                        tooltip: tooltipConfig
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
