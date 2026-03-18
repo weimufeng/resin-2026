@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深度互动报告：双马来酰亚胺（BMI）树脂行业</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chosen Palette: Warm Neutrals with Deep Blue & Teal Accents -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neutralbg: '#f8fafc', // slate-50
+                        panelbg: '#ffffff',
+                        primary: '#1e3a8a', // blue-900
+                        secondary: '#0f766e', // teal-700
+                        accent: '#ea580c', // orange-600
+                        textmain: '#334155', // slate-700
+                        textmuted: '#64748b', // slate-500
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            scroll-behavior: smooth;
+        }
+
+        /* Chart Container Mandatory Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 400px;
+            min-height: 300px;
+        }
+
+        /* Hide scrollbar for clean UI but keep functionality */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .nav-item.active {
+            background-color: #eff6ff;
+            color: #1e3a8a;
+            border-right: 4px solid #1e3a8a;
+            font-weight: 600;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Application Structure Plan: Dashboard-style layout with a sticky left sidebar for continuous navigation, and a scrollable main content area. This structure allows users to logically step through the 7 core modules of the industry report without losing context. It facilitates non-linear exploration while maintaining a structured narrative flow from macro (overview) to micro (unit economics/capital). -->
+    
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-white shadow-xl flex-shrink-0 z-20 flex flex-col h-full hidden md:flex">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-2xl font-bold text-primary tracking-tight">BMI树脂概览</h1>
+            <p class="text-xs text-textmuted mt-2">高频高速与航空航天的核心基材</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4" id="sidebar-nav">
+            <a href="#intro" class="nav-item block px-6 py-3 text-sm text-textmain hover:bg-slate-50 transition-colors active">1. 领域详细介绍</a>
+            <a href="#value-chain" class="nav-item block px-6 py-3 text-sm text-textmain hover:bg-slate-50 transition-colors">2. 行业地图与价值链</a>
+            <a href="#market" class="nav-item block px-6 py-3 text-sm text-textmain hover:bg-slate-50 transition-colors">3. 市场规模与驱动力</a>
+            <a href="#landscape" class="nav-item block px-6 py-3 text-sm text-textmain hover:bg-slate-50 transition-colors">4. 竞争格局</a>
+            <a href="#economics" class="nav-item block px-6 py-3 text-sm text-textmain hover:bg-slate-50 transition-colors">5. 商业模式与单元经济</a>
+            <a href="#moat" class="nav-item block px-6 py-3 text-sm text-textmain hover:bg-slate-50 transition-colors">6. 技术与准入门槛</a>
+            <a href="#capital" class="nav-item block px-6 py-3 text-sm text-textmain hover:bg-slate-50 transition-colors">7. 资本市场表现</a>
+        </nav>
+        <div class="p-4 bg-slate-50 text-xs text-center text-textmuted border-t border-slate-200">
+            内部研究报告 · 互动版
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto bg-neutralbg scroll-smooth pb-24" id="main-content">
+        
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white shadow-md sticky top-0 z-30 p-4 flex justify-between items-center">
+            <h1 class="text-lg font-bold text-primary">BMI树脂行业报告</h1>
+            <span class="text-xl">📊</span>
+        </header>
+
+        <div class="max-w-5xl mx-auto p-6 md:p-10 space-y-16">
+
+            <!-- Title Header -->
+            <section class="mb-12">
+                <div class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold tracking-wide mb-4">核心材料深度研报</div>
+                <h2 class="text-4xl font-extrabold text-slate-800 mb-4 leading-tight">双马来酰亚胺 (BMI) 树脂<br><span class="text-primary">下一代高频高速与先进复合材料的基石</span></h2>
+                <p class="text-lg text-textmuted leading-relaxed">
+                    本报告整合多方行业数据、券商研报及学术文献，深度剖析双马来酰亚胺（BMI）树脂的产业价值。在AI服务器迭代、5G/6G通讯及航空航天轻量化趋势下，BMI树脂凭借其无与伦比的耐热性与介电性能，正迎来爆发式增长。
+                </p>
+            </section>
+
+            <!-- 1. Introduction -->
+            <section id="intro" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 card-hover">
+                    <h3 class="text-2xl font-bold text-primary border-b-2 border-slate-100 pb-4 mb-6 flex items-center">
+                        <span class="text-3xl mr-3">🔬</span> 1. 领域详细介绍：超越环氧与特氟龙的性能极限
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed">
+                        <strong>功能与定位：</strong>在此模块，我们追溯BMI树脂的历史演进与核心技术特性。了解其物理化学属性是理解其为何能在高端制造中不可替代的前提。
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold text-secondary mb-2">什么是BMI树脂？</h4>
+                            <p class="text-sm text-textmain leading-relaxed mb-4">
+                                双马来酰亚胺（Bismaleimide, 简称BMI）是一种以马来酰亚胺为活性端基的双官能团高性能热固性树脂。它填补了环氧树脂（耐热性差）和聚酰亚胺（加工极其困难、成本极高）之间的空白。
+                            </p>
+                            <h4 class="font-semibold text-secondary mb-2">历史与学术演进</h4>
+                            <ul class="text-sm text-textmain space-y-2 list-disc pl-5">
+                                <li><strong>1960s 萌芽期：</strong> 法国Rhone-Poulenc公司首次商业化（Kinel），主要解决航空航天耐高温需求。</li>
+                                <li><strong>1980s-1990s 改性期：</strong> 纯BMI存在脆性大、溶解性差的致命缺点。学术界开始引入二元胺（如MDA）、烯丙基化合物（如双酚A二烯丙基醚 DBAs）进行共聚改性。</li>
+                                <li><strong>2010s-至今 爆发期：</strong> 随着高频高速覆铜板（CCL）需求爆发，低介电损耗（Df）成为关键。BMI凭借在极高频率下稳定的介电特性，成为M6/M7/M8级别高端CCL的核心树脂体系。</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-6 flex flex-col justify-center border border-slate-200">
+                            <h4 class="font-semibold text-slate-800 text-center mb-4">核心材料性能雷达图</h4>
+                            <div class="chart-container w-full h-[250px] max-h-[300px]">
+                                <canvas id="radarChart"></canvas>
+                            </div>
+                            <p class="text-xs text-center text-textmuted mt-4">数据展示：BMI在耐热与加工性上取得了极佳的平衡。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Value Chain -->
+            <section id="value-chain" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 card-hover">
+                    <h3 class="text-2xl font-bold text-primary border-b-2 border-slate-100 pb-4 mb-6 flex items-center">
+                        <span class="text-3xl mr-3">🔗</span> 2. 行业地图与价值链 (Value Chain)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed">
+                        <strong>功能与定位：</strong>本节揭示产业链的上下游构成及利润分配格局。我们将通过层级结构展示价值流向，突出“中游改性配方”在整个产业链中的高附加值地位。
+                    </p>
+                    
+                    <!-- Visualization & Content Choices: Goal: Organize & Explain Value Chain -> Method: HTML/Tailwind Flexbox Diagram -> Justification: Clearer than complex SVGs, natively responsive, interactive hover states reveal profit margins -> Library: Tailwind. Confirming NO SVG used. -->
+                    
+                    <div class="flex flex-col md:flex-row gap-4 items-stretch mb-8">
+                        <!-- Upstream -->
+                        <div class="flex-1 bg-slate-50 rounded-xl p-5 border border-slate-200 relative group transition-colors hover:bg-blue-50">
+                            <div class="text-xs font-bold text-textmuted uppercase tracking-wider mb-2">上游 (Upstream)</div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">基础化工原料</h4>
+                            <p class="text-sm text-textmain mb-3">提供马来酸酐、芳香族二元胺、溶剂等大宗/精细化工品。</p>
+                            <div class="text-xs text-blue-700 font-semibold bg-blue-100 px-2 py-1 rounded inline-block">毛利率: 10% - 15%</div>
+                            <div class="hidden md:block absolute -right-3 top-1/2 transform -translate-y-1/2 text-2xl text-slate-300 group-hover:text-blue-400">▶</div>
+                            <div class="md:hidden text-center text-2xl text-slate-300 my-2">▼</div>
+                        </div>
+
+                        <!-- Midstream -->
+                        <div class="flex-1 bg-primary text-white rounded-xl p-5 shadow-md relative group transform scale-105 z-10">
+                            <div class="text-xs font-bold text-blue-200 uppercase tracking-wider mb-2">中游 (Midstream) - 核心利润区</div>
+                            <h4 class="font-bold text-white text-lg mb-2">BMI单体合成与改性</h4>
+                            <p class="text-sm text-blue-100 mb-3">纯BMI合成及关键的共聚/共混改性（解决脆性/溶解性），形成专用配方。</p>
+                            <div class="text-xs text-primary font-bold bg-yellow-400 px-2 py-1 rounded inline-block">毛利率: 30% - 50%+</div>
+                            <div class="hidden md:block absolute -right-3 top-1/2 transform -translate-y-1/2 text-2xl text-primary z-20">▶</div>
+                            <div class="md:hidden text-center text-2xl text-primary my-2">▼</div>
+                        </div>
+
+                        <!-- Downstream -->
+                        <div class="flex-1 bg-slate-50 rounded-xl p-5 border border-slate-200 group transition-colors hover:bg-blue-50">
+                            <div class="text-xs font-bold text-textmuted uppercase tracking-wider mb-2">下游 (Downstream)</div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">高端终端应用</h4>
+                            <p class="text-sm text-textmain mb-3">高频高速覆铜板(CCL)、航空航天先进复合材料、先进封装材料、高级电机绝缘漆。</p>
+                            <div class="text-xs text-blue-700 font-semibold bg-blue-100 px-2 py-1 rounded inline-block">毛利率: 20% - 35%</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 rounded-lg p-4 text-sm text-blue-900 flex">
+                        <span class="text-xl mr-2">💡</span>
+                        <span><strong>利润分配洞察：</strong> 价值链呈现“微笑曲线”变体。最核心的利润集中在中游的<strong>配方改性环节</strong>。由于纯BMI粉末难以直接使用，掌握“如何将BMI与环氧树脂/氰酸酯完美融合”的Know-How，是获取超额利润的关键。</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Market Size & Drivers -->
+            <section id="market" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 card-hover">
+                    <h3 class="text-2xl font-bold text-primary border-b-2 border-slate-100 pb-4 mb-6 flex items-center">
+                        <span class="text-3xl mr-3">📈</span> 3. 市场规模与驱动力 (TAM/SAM/SOM)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed">
+                        <strong>功能与定位：</strong>通过数据可视化展示BMI市场的增长潜力，并拆解推动这一细分赛道爆发的三大核心引擎：AI算力、航空轻量化与国产替代。
+                    </p>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                        <!-- Chart Area -->
+                        <div class="lg:col-span-3">
+                            <h4 class="font-semibold text-slate-800 text-center mb-2">全球及中国电子级BMI市场规模预测 (亿元人民币)</h4>
+                            <div class="chart-container w-full h-[300px]">
+                                <canvas id="marketChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Drivers Interaction Area -->
+                        <div class="lg:col-span-2 flex flex-col justify-center">
+                            <h4 class="font-semibold text-secondary mb-4">核心增长引擎 (点击交互)</h4>
+                            
+                            <div class="space-y-3">
+                                <!-- Interaction Logic via JS -->
+                                <button onclick="showDriver('ai')" id="btn-ai" class="w-full text-left p-4 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary flex justify-between items-center driver-btn active-driver">
+                                    <span class="font-bold text-primary">💻 AI服务器与高频高速通讯</span>
+                                    <span class="text-xl">⊕</span>
+                                </button>
+                                
+                                <button onclick="showDriver('aero')" id="btn-aero" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary flex justify-between items-center driver-btn">
+                                    <span class="font-bold text-slate-700">✈️ 航空航天复合材料</span>
+                                    <span class="text-xl">⊕</span>
+                                </button>
+
+                                <button onclick="showDriver('sub')" id="btn-sub" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary flex justify-between items-center driver-btn">
+                                    <span class="font-bold text-slate-700">🇨🇳 供应链安全与国产替代</span>
+                                    <span class="text-xl">⊕</span>
+                                </button>
+                            </div>
+
+                            <div id="driver-content" class="mt-4 p-4 bg-slate-800 text-white rounded-xl text-sm leading-relaxed min-h-[120px]">
+                                <!-- Default Content -->
+                                <strong>TAM引擎：</strong> AI大模型爆发导致算力需求激增。AI服务器（如Nvidia DGX）主板需采用极低损耗（Ultra-Low Loss）的M7/M8级覆铜板。此类高端板材必须大量添加BMI树脂以降低介电损耗因子(Df)并提高耐热性。这是目前增速最快的增量市场 (SAM)。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Landscape -->
+            <section id="landscape" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 card-hover">
+                    <h3 class="text-2xl font-bold text-primary border-b-2 border-slate-100 pb-4 mb-6 flex items-center">
+                        <span class="text-3xl mr-3">⚔️</span> 4. 竞争格局 (Landscape)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed">
+                        <strong>功能与定位：</strong>分析存量市场的高度集中化特征，以及国内厂商如何通过技术突破和成本优势在增量市场（特别是电子级产品）中寻找切入点。
+                    </p>
+
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <div class="w-full md:w-1/2">
+                            <div class="chart-container w-full max-w-[400px] mx-auto h-[300px]">
+                                <canvas id="shareChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 space-y-6">
+                            <div class="border-l-4 border-accent pl-4">
+                                <h4 class="font-bold text-slate-800 mb-1">全球存量市场极度集中 (CR3 > 60%)</h4>
+                                <p class="text-sm text-textmain">长期以来，全球高端BMI产能被海外巨头垄断，如赢创(Evonik)、赫氏(Hexcel)、亨斯迈(Huntsman)。它们在航空航天领域拥有不可逾越的先发壁垒和专利池。</p>
+                            </div>
+                            <div class="border-l-4 border-secondary pl-4">
+                                <h4 class="font-bold text-slate-800 mb-1">增量市场切入点：电子级改性BMI</h4>
+                                <p class="text-sm text-textmain">国内企业避开欧美在航空结构件上的专利锋芒，精准切入<strong>5G/AI覆铜板用电子级改性BMI</strong>。目前国内头部企业如<span class="font-semibold text-primary">莱宇化工、沁阳天益、洪湖双马、东材科技</span>等，正通过配合下游PCB大厂（如生益科技、台光电）快速完成国产替代。</p>
+                            </div>
+                            
+                            <!-- Interactive Table (Pure HTML/Tailwind) -->
+                            <div class="mt-4 overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-100 text-slate-600">
+                                        <tr>
+                                            <th class="p-2 rounded-tl-lg">阵营</th>
+                                            <th class="p-2">代表企业</th>
+                                            <th class="p-2 rounded-tr-lg">核心优势</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr>
+                                            <td class="p-2 font-semibold">海外巨头</td>
+                                            <td class="p-2">Evonik, Hexcel</td>
+                                            <td class="p-2 text-textmuted">航空认证完整，纯度极高</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2 font-semibold text-primary">国内领军</td>
+                                            <td class="p-2">莱宇, 洪湖双马</td>
+                                            <td class="p-2 text-textmuted">改性配方灵活，响应速度快，成本低30%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Business Model & Unit Economics -->
+            <section id="economics" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 card-hover">
+                    <h3 class="text-2xl font-bold text-primary border-b-2 border-slate-100 pb-4 mb-6 flex items-center">
+                        <span class="text-3xl mr-3">💰</span> 5. 商业模式与单元经济 (Unit Economics)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed">
+                        <strong>功能与定位：</strong>透视企业的盈利本质。为什么这是一门好生意？我们将通过LTV（客户终身价值）与CAC（获客成本）的关系，展现高端特种化工品的高护城河特性。
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <!-- Stat Cards -->
+                        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-5 rounded-xl border border-slate-200 text-center">
+                            <div class="text-textmuted text-sm font-semibold mb-1">定制化改性级 毛利率</div>
+                            <div class="text-3xl font-extrabold text-primary">35-50%</div>
+                            <div class="text-xs text-slate-500 mt-2">远超基础化工品</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-5 rounded-xl border border-slate-200 text-center">
+                            <div class="text-textmuted text-sm font-semibold mb-1">普通标准级 毛利率</div>
+                            <div class="text-3xl font-extrabold text-slate-600">15-20%</div>
+                            <div class="text-xs text-slate-500 mt-2">竞争激烈区</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-5 rounded-xl border border-slate-200 text-center">
+                            <div class="text-textmuted text-sm font-semibold mb-1">下游验证周期 (CAC体现)</div>
+                            <div class="text-3xl font-extrabold text-accent">1-3 年</div>
+                            <div class="text-xs text-slate-500 mt-2">极高的时间与试错成本</div>
+                        </div>
+                        <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-5 rounded-xl border border-slate-200 text-center">
+                            <div class="text-textmuted text-sm font-semibold mb-1">客户流失率 (LTV体现)</div>
+                            <div class="text-3xl font-extrabold text-secondary">&lt; 5%</div>
+                            <div class="text-xs text-slate-500 mt-2">一旦切入，极难被替换</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <div class="text-4xl mr-4 mt-1">⚖️</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-2">收入模型解析：配方即服务</h4>
+                            <p class="text-sm text-textmain leading-relaxed">
+                                BMI厂商的商业模式并非单纯的“卖粉末”，而是<strong>“卖配方与解决方案”</strong>。下游客户（如CCL大厂）需要树脂厂商配合其玻璃纤维和铜箔，调配出介电常数、热膨胀系数(CTE)完美匹配的树脂胶液。这种强耦合关系导致了<strong>极高的获客成本(CAC)</strong>——需经历数次打样、测试、终端终端(如苹果、英伟达)认证；但同时也带来了<strong>极高的生命周期价值(LTV)</strong>——一旦进入供应链，为保证良率稳定，下游通常5-10年内不会轻易更换主材供应商。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Technology & Moat -->
+            <section id="moat" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 card-hover">
+                    <h3 class="text-2xl font-bold text-primary border-b-2 border-slate-100 pb-4 mb-6 flex items-center">
+                        <span class="text-3xl mr-3">🛡️</span> 6. 技术与准入门槛 (Moats)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed">
+                        <strong>功能与定位：</strong>剖析阻止新玩家进入的“护城河”在哪里。展示技术工艺、专利壁垒和供应链控制力交织形成的防御网络。
+                    </p>
+
+                    <!-- Interactive Tabs for Moats -->
+                    <div class="flex border-b border-slate-200 mb-6" id="moat-tabs">
+                        <button onclick="switchMoat('tech')" id="tab-tech" class="px-6 py-3 font-semibold text-primary border-b-2 border-primary focus:outline-none transition-colors">配方与工艺壁垒</button>
+                        <button onclick="switchMoat('cert')" id="tab-cert" class="px-6 py-3 font-semibold text-textmuted border-b-2 border-transparent hover:text-slate-700 focus:outline-none transition-colors">双重认证壁垒</button>
+                        <button onclick="switchMoat('supply')" id="tab-supply" class="px-6 py-3 font-semibold text-textmuted border-b-2 border-transparent hover:text-slate-700 focus:outline-none transition-colors">上游控制力</button>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl min-h-[160px] border border-slate-100">
+                        <!-- Tech Content -->
+                        <div id="content-tech" class="moat-content block">
+                            <h4 class="font-bold text-slate-800 mb-2 text-lg">💡 核心Know-How：树脂增韧与共聚</h4>
+                            <p class="text-sm text-textmain leading-relaxed mb-3">
+                                纯BMI树脂固化后极度脆弱且难溶于常规溶剂，无法直接用于浸胶。核心壁垒在于<strong>改性技术</strong>：必须使用二烯丙基双酚A (DABPA) 等物质与其进行共聚反应（如著名的Bismaleimide-Triazine, BT树脂）。改性过程中的温度控制、催化剂选择、分子量分布控制是高度保密的技术黑盒，直接决定了最终覆铜板的介电损耗(Df)指标。
+                            </p>
+                            <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                            <span class="text-xs font-semibold mt-1 inline-block text-primary">壁垒强度：极高</span>
+                        </div>
+                        
+                        <!-- Certification Content -->
+                        <div id="content-cert" class="moat-content hidden">
+                            <h4 class="font-bold text-slate-800 mb-2 text-lg">📝 漫长的终端验证周期</h4>
+                            <p class="text-sm text-textmain leading-relaxed mb-3">
+                                行业存在严格的<strong>“材料厂 -> 覆铜板厂(生益/台光电) -> PCB板厂 -> 终端OEM(Nvidia/苹果/华为)”</strong>的链条认证。尤其是终端OEM，一旦指定了材料清单（BOM），底层的树脂供应商即被锁定。新进入者即便研发出同等性能产品，也难以说服终端承担巨大的断链风险去更换供应商。
+                            </p>
+                            <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                <div class="bg-accent h-2.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                            <span class="text-xs font-semibold mt-1 inline-block text-accent">壁垒强度：高</span>
+                        </div>
+
+                        <!-- Supply Chain Content -->
+                        <div id="content-supply" class="moat-content hidden">
+                            <h4 class="font-bold text-slate-800 mb-2 text-lg">🏭 关键前驱体获取能力</h4>
+                            <p class="text-sm text-textmain leading-relaxed mb-3">
+                                高性能BMI需要特殊结构的二元胺作为合成原料。部分高端芳香族二元胺由于市场容量小、环保审批严，产能高度集中在少数精细化工企业手中。头部BMI树脂厂商通常通过股权绑定或长期长约锁定这些上游关键原材料，对新进入者形成资源封锁。
+                            </p>
+                            <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                <div class="bg-secondary h-2.5 rounded-full" style="width: 70%"></div>
+                            </div>
+                            <span class="text-xs font-semibold mt-1 inline-block text-secondary">壁垒强度：中高</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Capital Markets -->
+            <section id="capital" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 card-hover">
+                    <h3 class="text-2xl font-bold text-primary border-b-2 border-slate-100 pb-4 mb-6 flex items-center">
+                        <span class="text-3xl mr-3">🏦</span> 7. 资本市场表现 (Capital Markets)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed">
+                        <strong>功能与定位：</strong>跟踪一级市场融资热度与二级市场估值逻辑，揭示资本视角的产业价值及退出通道。
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold text-slate-800 mb-4">一级市场：国产替代逻辑驱动融资热潮</h4>
+                            
+                            <!-- Pure HTML Timeline -->
+                            <div class="relative border-l-2 border-slate-200 ml-3 space-y-6">
+                                <div class="relative pl-6">
+                                    <div class="absolute w-3 h-3 bg-primary rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                    <div class="text-xs text-secondary font-bold mb-1">近期趋势</div>
+                                    <h5 class="text-sm font-bold text-slate-800">高频高速树脂项目频获大额融资</h5>
+                                    <p class="text-xs text-textmuted mt-1">VC/PE重金押注具备特种树脂合成及改性能力的初创团队，单笔融资额多在数千万至数亿人民币，估值中枢随AI题材水涨船高。</p>
+                                </div>
+                                <div class="relative pl-6">
+                                    <div class="absolute w-3 h-3 bg-blue-400 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                    <div class="text-xs text-slate-500 font-bold mb-1">投资逻辑</div>
+                                    <h5 class="text-sm font-bold text-slate-800">绑定核心大客户是关键里程碑</h5>
+                                    <p class="text-xs text-textmuted mt-1">投资机构极度看重标的是否进入台光电、生益科技等一线CCL厂商的供应商库，"送样测试通过"即是估值翻倍的节点。</p>
+                                </div>
+                                <div class="relative pl-6">
+                                    <div class="absolute w-3 h-3 bg-slate-300 rounded-full -left-[7px] top-1.5 ring-4 ring-white"></div>
+                                    <div class="text-xs text-slate-500 font-bold mb-1">退出通道 (IPO/M&A)</div>
+                                    <h5 class="text-sm font-bold text-slate-800">以被并购(M&A)和科创板上市为主</h5>
+                                    <p class="text-xs text-textmuted mt-1">大型传统化工企业（如万华、东材）通过收并购切入高端电子材料赛道；独立发展的头部企业瞄准科创板/创业板IPO。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                            <h4 class="font-semibold text-slate-800 mb-4">二级市场对标与估值中枢 (PE/PS)</h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                                    <span class="text-sm font-medium">综合新材料龙头 (兼营BMI)</span>
+                                    <span class="text-sm font-bold text-primary">PE: 25x - 35x</span>
+                                </div>
+                                <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                                    <span class="text-sm font-medium">纯电子树脂概念股 (稀缺)</span>
+                                    <span class="text-sm font-bold text-accent">PE: 40x - 60x</span>
+                                </div>
+                                <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                                    <span class="text-sm font-medium">传统基础化工股</span>
+                                    <span class="text-sm font-bold text-slate-500">PE: 10x - 15x</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-textmuted mt-4">
+                                *估值溢价主要来源于其在“AI算力硬件卡脖子环节”的战略地位。利润率越高、电子级产品占比越大的企业，市场给予的估值倍数越显著。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        // --- 1. Navigation Logic (Scrollspy & Click) ---
+        const sections = document.querySelectorAll('main section');
+        const navItems = document.querySelectorAll('.nav-item');
+        const mainContent = document.getElementById('main-content');
+
+        // Click to scroll
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Let native smooth scroll handle the jump via href
+                navItems.forEach(nav => {
+                    nav.classList.remove('active', 'bg-slate-50', 'border-primary');
+                    nav.classList.replace('bg-blue-50', 'hover:bg-slate-50');
+                    nav.style.backgroundColor = '';
+                    nav.style.color = '';
+                    nav.style.borderRight = '';
+                    nav.style.fontWeight = '';
+                });
+                this.classList.add('active');
+                // Apply inline styles to mimic the CSS class for active state
+                this.style.backgroundColor = '#eff6ff';
+                this.style.color = '#1e3a8a';
+                this.style.borderRight = '4px solid #1e3a8a';
+                this.style.fontWeight = '600';
+            });
+        });
+
+        // Scrollspy
+        mainContent.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (mainContent.scrollTop >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.style.backgroundColor = '';
+                item.style.color = '';
+                item.style.borderRight = '';
+                item.style.fontWeight = '';
+                if (item.getAttribute('href').substring(1) === current) {
+                    item.style.backgroundColor = '#eff6ff';
+                    item.style.color = '#1e3a8a';
+                    item.style.borderRight = '4px solid #1e3a8a';
+                    item.style.fontWeight = '600';
+                }
+            });
+        });
+
+        // --- 2. Chart.js Initialization ---
+        // Visualization & Content Choices: 
+        // 1. Radar Chart: Goal -> Compare material properties. Viz -> Chart.js Radar. Justification -> Excellent for multi-dimensional chemical properties.
+        // 2. Market Size Chart: Goal -> Show growth. Viz -> Chart.js Mixed (Bar+Line). Justification -> Shows absolute size and YoY growth clearly.
+        // 3. Landscape Chart: Goal -> Show market concentration. Viz -> Chart.js Doughnut. Justification -> Standard intuitive way to show CR5/market share.
+        // Confirming NO SVG/Mermaid used.
+
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#64748b';
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Radar Chart
+            const ctxRadar = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['耐热性(Tg)', '加工性(溶解)', '介电常数(Dk)', '介电损耗(Df)', '力学强度', '成本优势'],
+                    datasets: [{
+                        label: '改性BMI树脂',
+                        data: [90, 80, 85, 95, 80, 60],
+                        backgroundColor: 'rgba(30, 58, 138, 0.2)', // primary with opacity
+                        borderColor: '#1e3a8a',
+                        pointBackgroundColor: '#1e3a8a',
+                        borderWidth: 2
+                    }, {
+                        label: '普通环氧树脂',
+                        data: [60, 95, 60, 50, 75, 95],
+                        backgroundColor: 'rgba(100, 116, 139, 0.2)',
+                        borderColor: '#94a3b8',
+                        pointBackgroundColor: '#94a3b8',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.05)' },
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            pointLabels: { font: { size: 11 } },
+                            ticks: { display: false, min: 0, max: 100 }
+                        }
+                    },
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
+                }
+            });
+
+            // Market Size Chart (Bar + Line)
+            const ctxMarket = document.getElementById('marketChart').getContext('2d');
+            new Chart(ctxMarket, {
+                type: 'bar',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024E', '2025E', '2026E'],
+                    datasets: [{
+                        type: 'line',
+                        label: 'YoY 增速 (%)',
+                        data: [5, 8, 15, 22, 18, 16, 15],
+                        borderColor: '#ea580c', // accent
+                        backgroundColor: '#ea580c',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        yAxisID: 'y1'
+                    },{
+                        type: 'bar',
+                        label: '电子级市场规模 (亿元)',
+                        data: [12, 13, 15, 18.3, 21.6, 25, 28.8],
+                        backgroundColor: '#1e3a8a', // primary
+                        borderRadius: 4,
+                        yAxisID: 'y'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            ticks: { callback: function(value) { return value + '%' } }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.dataset.type === 'line') {
+                                        label += context.parsed.y + '%';
+                                    } else {
+                                        label += context.parsed.y + ' 亿元';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Market Share Doughnut Chart
+            const ctxShare = document.getElementById('shareChart').getContext('2d');
+            new Chart(ctxShare, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Evonik (德)', 'Hexcel (美)', 'Huntsman (美)', '国内龙头阵营', '其他'],
+                    datasets: [{
+                        data: [25, 20, 15, 25, 15],
+                        backgroundColor: [
+                            '#1e3a8a', // primary
+                            '#3b82f6', // blue-500
+                            '#93c5fd', // blue-300
+                            '#ea580c', // accent (highlighting domestic)
+                            '#cbd5e1'  // slate-300
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12 } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return ' ' + context.label + ': ' + context.parsed + '%'; }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // --- 3. Interactive Drivers Logic ---
+        const driverData = {
+            'ai': '<strong>TAM引擎 (短期爆发)：</strong> AI大模型爆发导致算力需求激增。AI服务器（如Nvidia DGX）主板需采用极低损耗（Ultra-Low Loss）的M7/M8级覆铜板。此类高端板材必须大量添加BMI树脂以降低介电损耗因子(Df)并提高耐热性。这是目前增速最快的增量市场 (SAM)。',
+            'aero': '<strong>TAM基础 (长期稳定)：</strong> BMI复合材料是制造隐形战机、商用大飞机（如C919发动机周边部件）的关键结构材料。相比环氧树脂，它能在200-250°C的高温下长期工作而不丧失机械强度。国防预算增长保障了该领域的稳定需求。',
+            'sub': '<strong>市场催化剂：</strong> 欧美对高端电子化学品的出口管制日益趋严。供应链安全驱动下游PCB和CCL巨头（台光电、生益）主动开放测试窗口，给国内具备配方研发能力的化工企业（如莱宇、东材）提供了历史性的导入机遇。'
+        };
+
+        function showDriver(type) {
+            // Update Text
+            const contentDiv = document.getElementById('driver-content');
+            contentDiv.style.opacity = '0';
+            setTimeout(() => {
+                contentDiv.innerHTML = driverData[type];
+                contentDiv.style.opacity = '1';
+                contentDiv.style.transition = 'opacity 0.3s ease';
+            }, 150);
+
+            // Update Buttons State
+            const btns = document.querySelectorAll('.driver-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('active-driver', 'border-blue-200', 'bg-blue-50');
+                btn.classList.add('border-slate-200', 'hover:bg-slate-50');
+                btn.querySelector('span:first-child').classList.replace('text-primary', 'text-slate-700');
+            });
+
+            const activeBtn = document.getElementById(`btn-${type}`);
+            activeBtn.classList.remove('border-slate-200', 'hover:bg-slate-50');
+            activeBtn.classList.add('active-driver', 'border-blue-200', 'bg-blue-50');
+            activeBtn.querySelector('span:first-child').classList.replace('text-slate-700', 'text-primary');
+        }
+
+        // --- 4. Moat Tabs Logic ---
+        function switchMoat(tabId) {
+            // Hide all content
+            document.querySelectorAll('.moat-content').forEach(el => el.classList.add('hidden'));
+            // Reset all tabs styles
+            document.querySelectorAll('#moat-tabs button').forEach(el => {
+                el.classList.remove('text-primary', 'border-primary');
+                el.classList.add('text-textmuted', 'border-transparent');
+            });
+
+            // Show selected content
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            // Highlight selected tab
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            activeTab.classList.remove('text-textmuted', 'border-transparent');
+            activeTab.classList.add('text-primary', 'border-primary');
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深度互动研报：酚醛树脂行业</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chosen Palette: Warm Bakelite Amber & Technical Slate -->
+    <!-- 
+      Background: Warm off-white to represent the base chemical nature.
+      Primary: Amber/Brown tones representing traditional Bakelite.
+      Secondary: Deep Slate/Teal representing modern electronic and aerospace applications.
+      Accent: Soft Orange for highlights.
+    -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neutralbg: '#fdfbf7', // Warm off-white
+                        panelbg: '#ffffff',
+                        primary: '#78350f', // amber-900 (Bakelite brown)
+                        primarylight: '#d97706', // amber-600
+                        secondary: '#334155', // slate-700 (Tech feel)
+                        secondarylight: '#64748b', // slate-500
+                        accent: '#ea580c', // orange-600
+                        textmain: '#27272a', // zinc-800
+                        textmuted: '#52525b', // zinc-600
+                        bordercolor: '#e4e4e7', // zinc-200
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'PingFang SC', sans-serif;
+            background-color: #fdfbf7;
+            color: #27272a;
+            scroll-behavior: smooth;
+        }
+
+        /* * Chart Container Mandatory Styling 
+         * Ensures charts are responsive but bounded, preventing layout breaking.
+         */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px; /* Bounded max width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+            min-height: 250px;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 280px; /* Smaller on mobile */
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fdfbf7; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+
+        .nav-item { transition: all 0.2s ease-in-out; }
+        .nav-item.active {
+            background-color: #fffbeb; /* amber-50 */
+            color: #78350f;
+            border-right: 4px solid #78350f;
+            font-weight: 600;
+        }
+
+        .interactive-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* CSS Shapes for Visuals (No SVG) */
+        .molecule-node {
+            width: 12px; height: 12px; border-radius: 50%; display: inline-block;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Application Structure Plan: 
+         Structure: Dashboard/Report hybrid with a persistent left sidebar for navigation and a scrollable main content area.
+         Why: A 7-module industry report contains a lot of dense information. A linear scroll can cause users to lose context. The sidebar allows instant jumping between macro views (Market Size) and micro views (Unit Economics). 
+         Flow: Users can read top-to-bottom sequentially, or use the sidebar to jump to specific modules of interest (e.g., directly to 'Capital Markets'). Interactive tabs within sections (like the dual-market nature in Economics) prevent text bloat while encouraging exploration.
+    -->
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-white border-r border-bordercolor flex-shrink-0 z-20 flex flex-col h-full hidden lg:flex shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+        <div class="p-6 border-b border-bordercolor">
+            <h1 class="text-2xl font-bold text-primary tracking-tight">酚醛树脂研报</h1>
+            <p class="text-xs text-textmuted mt-2">百年材料的现代焕新</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4" id="sidebar-nav">
+            <a href="#module-1" class="nav-item block px-6 py-3 text-sm text-textmuted hover:bg-zinc-50 active">1. 领域详细介绍</a>
+            <a href="#module-2" class="nav-item block px-6 py-3 text-sm text-textmuted hover:bg-zinc-50">2. 行业地图与价值链</a>
+            <a href="#module-3" class="nav-item block px-6 py-3 text-sm text-textmuted hover:bg-zinc-50">3. 市场规模与驱动力</a>
+            <a href="#module-4" class="nav-item block px-6 py-3 text-sm text-textmuted hover:bg-zinc-50">4. 竞争格局</a>
+            <a href="#module-5" class="nav-item block px-6 py-3 text-sm text-textmuted hover:bg-zinc-50">5. 商业模式与单元经济</a>
+            <a href="#module-6" class="nav-item block px-6 py-3 text-sm text-textmuted hover:bg-zinc-50">6. 技术/准入门槛</a>
+            <a href="#module-7" class="nav-item block px-6 py-3 text-sm text-textmuted hover:bg-zinc-50">7. 资本市场表现</a>
+        </nav>
+        <div class="p-4 bg-zinc-50 text-xs text-center text-textmuted border-t border-bordercolor font-mono">
+            CONFIDENTIAL & INTERACTIVE
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto scroll-smooth pb-24 relative" id="main-content">
+        
+        <!-- Mobile Header -->
+        <header class="lg:hidden bg-white shadow-sm sticky top-0 z-30 p-4 border-b border-bordercolor flex justify-between items-center">
+            <h1 class="text-lg font-bold text-primary">酚醛树脂深度研报</h1>
+            <span class="text-xl">⚗️</span>
+        </header>
+
+        <div class="max-w-5xl mx-auto p-5 md:p-10 space-y-16">
+
+            <!-- Hero Section -->
+            <section class="mt-4 md:mt-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold tracking-wide mb-4">
+                    <span class="molecule-node bg-amber-600"></span>
+                    基础化工与先进材料交叉领域
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-textmain mb-6 leading-tight">
+                    酚醛树脂 (Phenolic Resin)<br>
+                    <span class="text-primary text-3xl md:text-4xl block mt-2">从"电木"到"半导体塑封"的百年跨越</span>
+                </h2>
+                <p class="text-lg text-textmuted leading-relaxed border-l-4 border-primarylight pl-4">
+                    作为人类历史上第一种完全合成的塑料（1907年），酚醛树脂以其优异的耐热性、阻燃性和尺寸稳定性闻名。本报告整合多方行业数据，深入剖析其在经历百年发展后，如何通过电子级改性、生物基替代，在半导体封装、新能源汽车与航空航天领域焕发第二春，呈现出显著的“传统体量支撑，高端应用拉动”的产业格局。
+                </p>
+            </section>
+
+            <!-- 1. Introduction -->
+            <section id="module-1" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-bordercolor interactive-card">
+                    <h3 class="text-2xl font-bold text-secondary border-b-2 border-zinc-100 pb-4 mb-6 flex items-center">
+                        <span class="text-2xl mr-3">📜</span> 1. 领域详细介绍：百年材料的演进
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed text-sm">
+                        <strong>导读：</strong> 本模块追溯酚醛树脂的发展史。理解其化学本质（苯酚+甲醛缩聚）是把握其耐高温、阻燃特性的关键。我们将展示从早期绝缘材料到现代高端复合材料的技术跃迁。
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold text-primary mb-3 text-lg">化学本质与分类</h4>
+                            <p class="text-sm text-textmuted mb-4">
+                                酚醛树脂是由酚类（主要为苯酚）与醛类（主要为甲醛）在催化剂作用下缩聚而成的高分子化合物。根据催化剂和摩尔比的不同，分为两大类：
+                            </p>
+                            <div class="space-y-3">
+                                <div class="bg-amber-50 p-3 rounded border border-amber-100">
+                                    <span class="font-bold text-amber-900">热塑性 (Novolac):</span> 
+                                    <span class="text-sm text-amber-800">酸性催化，甲醛/苯酚比&lt;1。需加入固化剂（如六亚甲基四胺 HMTA）加热才能固化。常用于模塑料、摩擦材料。</span>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                                    <span class="font-bold text-slate-800">热固性 (Resole):</span> 
+                                    <span class="text-sm text-slate-600">碱性催化，甲醛/苯酚比&gt;1。加热即可自身交联固化。常用于浸渍胶、涂料、耐火材料。</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Timeline using HTML/CSS -->
+                        <div class="relative border-l-2 border-amber-200 ml-4 py-2">
+                            <h4 class="font-bold text-primary mb-4 ml-4">行业历史与技术节点</h4>
+                            <div class="mb-5 relative">
+                                <div class="absolute w-3 h-3 bg-primary rounded-full -left-[23px] top-1"></div>
+                                <div class="ml-4">
+                                    <div class="text-xs font-bold text-amber-600">1907年 - 诞生</div>
+                                    <div class="text-sm font-semibold">Baekeland发明“电木”</div>
+                                    <div class="text-xs text-textmuted mt-1">人类首个全合成塑料，开启高分子时代。</div>
+                                </div>
+                            </div>
+                            <div class="mb-5 relative">
+                                <div class="absolute w-3 h-3 bg-primarylight rounded-full -left-[23px] top-1"></div>
+                                <div class="ml-4">
+                                    <div class="text-xs font-bold text-amber-600">1970s - 复合化</div>
+                                    <div class="text-sm font-semibold">航空航天与耐烧蚀材料</div>
+                                    <div class="text-xs text-textmuted mt-1">碳纤维/酚醛树脂复合材料应用于火箭喷嘴、返回舱。</div>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute w-3 h-3 bg-secondary rounded-full -left-[23px] top-1"></div>
+                                <div class="ml-4">
+                                    <div class="text-xs font-bold text-secondarylight">当前前沿学术研究</div>
+                                    <div class="text-sm font-semibold">绿色化 & 电子化</div>
+                                    <div class="text-xs text-textmuted mt-1">1. 生物基替代（木质素提炼酚替代石化苯酚）；2. 超低游离酚/醛环保控制；3. 半导体封装级高纯度改性。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Value Chain -->
+            <section id="module-2" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-bordercolor interactive-card">
+                    <h3 class="text-2xl font-bold text-secondary border-b-2 border-zinc-100 pb-4 mb-6 flex items-center">
+                        <span class="text-2xl mr-3">🔗</span> 2. 行业地图与价值链 (Value Chain)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed text-sm">
+                        <strong>导读：</strong> 揭示上下游生态及利润分配。酚醛树脂本质上是将基础大宗化工品转化为特种性能材料的中间枢纽，其利润分布呈现出明显的“两极分化”特征。
+                    </p>
+
+                    <!-- Visualization & Content Choices: 
+                         Goal: Show flow from raw materials to applications and highlight profit disparities.
+                         Method: Horizontal flex/grid layout with connecting arrows (HTML text) and distinct color coding for standard vs. high-end downstream. 
+                         Interaction: None needed for base understanding, static layout is clearest. 
+                         Library/Method: Pure HTML/Tailwind. NO SVG. 
+                    -->
+                    
+                    <div class="flex flex-col md:flex-row gap-2 justify-between items-center text-center">
+                        
+                        <!-- Upstream -->
+                        <div class="w-full md:w-1/4 bg-zinc-50 p-4 rounded-xl border border-zinc-200">
+                            <div class="text-xs font-bold text-textmuted mb-2 tracking-widest uppercase">上游原材料</div>
+                            <div class="font-bold text-textmain mb-1">苯酚 (Phenol)</div>
+                            <div class="font-bold text-textmain mb-3">甲醛 (Formaldehyde)</div>
+                            <p class="text-xs text-textmuted">受原油价格高度影响，属于大宗化工品，供应充足但价格波动大。</p>
+                            <div class="mt-3 inline-block px-2 py-1 bg-zinc-200 text-zinc-700 text-xs rounded font-mono">毛利率 ~10%</div>
+                        </div>
+
+                        <div class="text-zinc-300 text-2xl hidden md:block">➔</div>
+                        <div class="text-zinc-300 text-2xl md:hidden transform rotate-90">➔</div>
+
+                        <!-- Midstream -->
+                        <div class="w-full md:w-1/4 bg-amber-50 p-4 rounded-xl border border-amber-200 relative transform md:scale-105 shadow-sm z-10">
+                            <div class="text-xs font-bold text-amber-700 mb-2 tracking-widest uppercase">中游制造</div>
+                            <div class="font-bold text-primary text-lg mb-2">酚醛树脂合成</div>
+                            <p class="text-xs text-amber-800">配方设计、反应控制、脱水造粒。分离游离酚/醛是核心工艺。</p>
+                            <div class="mt-3 flex flex-col gap-1">
+                                <span class="px-2 py-1 bg-amber-200 text-amber-900 text-xs rounded font-mono">通用级毛利: 10-15%</span>
+                                <span class="px-2 py-1 bg-primary text-white text-xs rounded font-mono shadow">特种级毛利: 30-45%</span>
+                            </div>
+                        </div>
+
+                        <div class="text-zinc-300 text-2xl hidden md:block">➔</div>
+                        <div class="text-zinc-300 text-2xl md:hidden transform rotate-90">➔</div>
+
+                        <!-- Downstream -->
+                        <div class="w-full md:w-1/3 flex flex-col gap-2">
+                            <div class="text-xs font-bold text-textmuted mb-1 tracking-widest uppercase text-center md:text-left">下游应用分化</div>
+                            
+                            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 flex justify-between items-center">
+                                <div class="text-left">
+                                    <div class="text-sm font-bold text-slate-700">传统大宗 (约80%份额)</div>
+                                    <div class="text-xs text-slate-500">木材粘合剂、耐火材料、摩擦材料(刹车片)</div>
+                                </div>
+                                <div class="text-xs font-mono text-slate-500">红海竞争</div>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-3 rounded-lg border border-blue-200 flex justify-between items-center">
+                                <div class="text-left">
+                                    <div class="text-sm font-bold text-blue-800">高端电子/新材 (约20%份额)</div>
+                                    <div class="text-xs text-blue-600">覆铜板(CCL)、半导体塑封料(EMC)、光刻胶</div>
+                                </div>
+                                <div class="text-xs font-mono font-bold text-blue-800">高壁垒/蓝海</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Market Size & Drivers -->
+            <section id="module-3" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-bordercolor interactive-card">
+                    <h3 class="text-2xl font-bold text-secondary border-b-2 border-zinc-100 pb-4 mb-6 flex items-center">
+                        <span class="text-2xl mr-3">📈</span> 3. 市场规模与驱动力 (TAM/SAM/SOM)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed text-sm">
+                        <strong>导读：</strong> 酚醛树脂是一个发展成熟的庞大市场，整体增速平稳（CAGR ~4-5%）。但其内部结构正在发生剧变。本节重点分析驱动行业结构性增长的“三驾马车”。
+                    </p>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        
+                        <!-- Chart Container -->
+                        <div class="w-full">
+                            <h4 class="text-center font-bold text-sm text-textmuted mb-2">全球酚醛树脂市场规模预测 (亿美元)</h4>
+                            <div class="chart-container">
+                                <canvas id="marketChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Drivers Interaction -->
+                        <div class="flex flex-col justify-center">
+                            <h4 class="font-bold text-primary mb-4 text-lg">核心增长引擎 (点击查看)</h4>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4" id="driver-buttons">
+                                <button onclick="updateDriver('ev')" class="px-4 py-2 rounded-full border border-primary text-primary font-semibold text-sm hover:bg-amber-50 transition-colors focus:ring-2 focus:outline-none active-driver-btn" id="btn-ev">
+                                    新能源与轻量化
+                                </button>
+                                <button onclick="updateDriver('semi')" class="px-4 py-2 rounded-full border border-slate-300 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors focus:ring-2 focus:outline-none" id="btn-semi">
+                                    半导体与5G
+                                </button>
+                                <button onclick="updateDriver('policy')" class="px-4 py-2 rounded-full border border-slate-300 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors focus:ring-2 focus:outline-none" id="btn-policy">
+                                    消防政策驱动
+                                </button>
+                            </div>
+
+                            <div id="driver-content-box" class="bg-zinc-50 p-5 rounded-xl border border-zinc-200 min-h-[150px]">
+                                <h5 class="font-bold text-primary mb-2" id="driver-title">新能源与轻量化 (SAM驱动)</h5>
+                                <p class="text-sm text-textmain leading-relaxed" id="driver-desc">
+                                    新能源汽车对电池包的安全性和车身轻量化提出极高要求。酚醛树脂因其卓越的阻燃性（遇火不燃烧，仅碳化发烟少），正大量取代部分传统塑料，用于电池隔热板、电机部件以及高性能摩擦片。
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Landscape -->
+            <section id="module-4" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-bordercolor interactive-card">
+                    <h3 class="text-2xl font-bold text-secondary border-b-2 border-zinc-100 pb-4 mb-6 flex items-center">
+                        <span class="text-2xl mr-3">⚔️</span> 4. 竞争格局 (Landscape)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed text-sm">
+                        <strong>导读：</strong> 行业呈现“大市场、小企业”与“寡头垄断高端”并存的复杂局面。我们将通过数据展示集中度，并分析国内企业如何在增量市场寻找突破口。
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <div class="mb-4">
+                                <span class="bg-slate-100 text-slate-700 text-xs px-2 py-1 rounded font-bold">存量市场：高度分散</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold ml-2">高端市场 (如EMC)：寡头垄断</span>
+                            </div>
+                            <p class="text-sm text-textmain mb-4">
+                                全球酚醛树脂产能主要集中在亚太地区（特别是中国），但多为中低端耐火、磨具用树脂，竞争激烈。而电子级、航空级高端树脂，技术长期被美日企业把持。
+                            </p>
+                            
+                            <table class="min-w-full text-sm text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-zinc-200 text-textmuted">
+                                        <th class="py-2 font-semibold">梯队</th>
+                                        <th class="py-2 font-semibold">代表企业</th>
+                                        <th class="py-2 font-semibold">核心优势阵地</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-zinc-100">
+                                        <td class="py-3 font-bold text-slate-700">海外巨头 (第一梯队)</td>
+                                        <td class="py-3">Hexion, 住友电木, 昭和电工</td>
+                                        <td class="py-3 text-xs">半导体塑封料(EMC)、航空航天、特种涂料。拥有深厚专利池。</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 bg-amber-50">
+                                        <td class="py-3 font-bold text-primary">国内龙头 (第二梯队)</td>
+                                        <td class="py-3">圣泉集团, 彤程新材, 兴业新材</td>
+                                        <td class="py-3 text-xs">从大宗向高端突围。<strong class="text-amber-800">圣泉</strong>在光刻胶/电子级突破；<strong class="text-amber-800">彤程</strong>专注电子化学品。</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-slate-500">中小微企 (长尾)</td>
+                                        <td class="py-3">区域性小厂 (>百家)</td>
+                                        <td class="py-3 text-xs">木材加工、低端耐火材料。受环保政策承压严重。</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div class="w-full">
+                            <h4 class="text-center font-bold text-sm text-textmuted mb-2">国内高端电子级树脂市场份额预估</h4>
+                            <div class="chart-container max-h-[300px]">
+                                <canvas id="shareChart"></canvas>
+                            </div>
+                            <p class="text-center text-xs text-textmuted mt-2">增量切入点：国产替代正在加速打破日企垄断。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Business Model & Unit Economics -->
+            <section id="module-5" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-bordercolor interactive-card">
+                    <h3 class="text-2xl font-bold text-secondary border-b-2 border-zinc-100 pb-4 mb-6 flex items-center">
+                        <span class="text-2xl mr-3">🧮</span> 5. 商业模式与单元经济 (Unit Economics)
+                    </h3>
+                    <p class="text-textmain mb-4 leading-relaxed text-sm">
+                        <strong>导读：</strong> 探讨企业的盈利模型。由于应用场景差异巨大，我们将对比“大宗通用型”和“特种定制型”两种截然不同的经济模型。
+                    </p>
+
+                    <!-- Toggle Logic for UE -->
+                    <div class="flex justify-center mb-6">
+                        <div class="bg-zinc-100 p-1 rounded-lg inline-flex">
+                            <button onclick="toggleUE('standard')" id="toggle-standard" class="px-6 py-2 rounded-md text-sm font-bold bg-white text-textmain shadow-sm transition-all">通用标准品模式</button>
+                            <button onclick="toggleUE('special')" id="toggle-special" class="px-6 py-2 rounded-md text-sm font-bold text-textmuted hover:text-textmain transition-all">高端特种品模式</button>
+                        </div>
+                    </div>
+
+                    <div id="ue-content" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Content populated by JS -->
+                    </div>
+
+                    <div class="mt-6 bg-slate-50 p-4 rounded-xl border border-slate-200 border-l-4 border-l-slate-400">
+                        <h4 class="font-bold text-slate-800 mb-1 text-sm">洞察：获客成本(CAC)与生命周期(LTV)的权衡</h4>
+                        <p class="text-sm text-textmuted" id="ue-insight">
+                            <!-- Populated by JS -->
+                            在通用标准品市场，比拼的是规模效应和对上游原材料的议价能力，客户对价格极其敏感，切换成本低，因此LTV较短，但不需要复杂的验证，CAC也相对较低。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Technology & Moats -->
+            <section id="module-6" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-bordercolor interactive-card">
+                    <h3 class="text-2xl font-bold text-secondary border-b-2 border-zinc-100 pb-4 mb-6 flex items-center">
+                        <span class="text-2xl mr-3">🏰</span> 6. 技术/准入门槛 (Moats)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed text-sm">
+                        <strong>导读：</strong> 为什么小厂做不出高端树脂？本节解构高端酚醛树脂企业建立的三重护城河体系：环保、配方黑盒与客户认证。
+                    </p>
+
+                    <!-- Visualization: Moat Layers (HTML/CSS) -->
+                    <div class="flex flex-col gap-4">
+                        
+                        <!-- Layer 1 -->
+                        <div class="flex items-stretch bg-white border border-red-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                            <div class="bg-red-500 w-2 md:w-4 flex-shrink-0"></div>
+                            <div class="p-4 flex-1">
+                                <h4 class="font-bold text-red-700 flex items-center"><span class="mr-2">🚧</span> 基础门槛：环保与安监核准 (牌照壁垒)</h4>
+                                <p class="text-sm text-textmain mt-1">苯酚和甲醛均属高毒性、易燃易爆危险化学品。随着全球特别是中国环保政策趋严，新建产能的环评批复极难获得。这直接清退了大量环保不达标的落后产能，保障了现有合规巨头的存量利益。</p>
+                            </div>
+                        </div>
+
+                        <!-- Layer 2 -->
+                        <div class="flex items-stretch bg-white border border-amber-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ml-0 md:ml-6">
+                            <div class="bg-amber-500 w-2 md:w-4 flex-shrink-0"></div>
+                            <div class="p-4 flex-1">
+                                <h4 class="font-bold text-amber-700 flex items-center"><span class="mr-2">🧪</span> 核心护城河：配方与工艺的“黑盒” (技术壁垒)</h4>
+                                <p class="text-sm text-textmain mt-1">合成原理公开，但如何控制分子量分布、如何将游离酚/醛降至PPM(百万分之一)级别、如何改性以匹配不同树脂体系？这些依赖长时间试错积累的“Know-How”无法通过专利简单抄袭，构成了极高的隐性技术壁垒。</p>
+                            </div>
+                        </div>
+
+                        <!-- Layer 3 -->
+                        <div class="flex items-stretch bg-white border border-blue-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow ml-0 md:ml-12">
+                            <div class="bg-blue-600 w-2 md:w-4 flex-shrink-0"></div>
+                            <div class="p-4 flex-1">
+                                <h4 class="font-bold text-blue-800 flex items-center"><span class="mr-2">🤝</span> 顶层壁垒：下游长周期认证 (转换成本壁垒)</h4>
+                                <p class="text-sm text-textmain mt-1">对于电子级或航空级应用，树脂性能直接决定终端良率和安全。打入下游（如台积电、波音供应链）需要经过1-3年极其严苛的可靠性测试。一旦进入BOM表，下游客户极度排斥更换供应商，形成强绑定的网络效应。</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Capital Markets -->
+            <section id="module-7" class="scroll-mt-10">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-bordercolor interactive-card">
+                    <h3 class="text-2xl font-bold text-secondary border-b-2 border-zinc-100 pb-4 mb-6 flex items-center">
+                        <span class="text-2xl mr-3">💰</span> 7. 资本市场表现 (Capital Markets)
+                    </h3>
+                    <p class="text-textmain mb-6 leading-relaxed text-sm">
+                        <strong>导读：</strong> 资本如何对酚醛树脂企业进行定价？受“传统化工”与“新材料”双重属性影响，其估值逻辑存在显著的分野。
+                    </p>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">一级与二级市场动态</h4>
+                            <ul class="space-y-4">
+                                <li class="flex items-start">
+                                    <div class="bg-zinc-100 p-2 rounded mr-3 mt-1"><span class="text-lg">📈</span></div>
+                                    <div>
+                                        <div class="font-bold text-textmain text-sm">IPO与融资热度</div>
+                                        <div class="text-sm text-textmuted mt-1">单纯的传统酚醛树脂扩产项目一级市场融资遇冷。资本青睐具备“国产替代”概念的电子级酚醛（如光刻胶树脂骨架）、生物基酚醛初创企业。</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="bg-zinc-100 p-2 rounded mr-3 mt-1"><span class="text-lg">🔄</span></div>
+                                    <div>
+                                        <div class="font-bold text-textmain text-sm">M&A 并购整合</div>
+                                        <div class="text-sm text-textmuted mt-1">行业发生横向并购整合。头部企业通过收购小厂获取排污指标和产能，或通过收购海外特种化学品业务拓展高端产品线（如彤程新材的并购策略）。</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div class="w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="text-center font-bold text-sm text-textmain mb-2">不同业务属性的二级市场估值中枢对比 (PE TTM)</h4>
+                            <div class="chart-container" style="height: 250px; min-height: 250px;">
+                                <canvas id="valuationChart"></canvas>
+                            </div>
+                            <p class="text-xs text-textmuted text-center mt-2">数据说明：具备半导体材料概念的企业享受显著的估值溢价。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        // --- Core Interaction Handling & Functional Navigation ---
+
+        // 1. Sidebar Active State & Smooth Scrolling
+        const sections = document.querySelectorAll('main section');
+        const navItems = document.querySelectorAll('.nav-item');
+        const mainContent = document.getElementById('main-content');
+
+        mainContent.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (mainContent.scrollTop >= (sectionTop - 100)) { // Offset for padding
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active', 'bg-amber-50', 'text-primary', 'font-semibold');
+                item.style.borderRight = '';
+                
+                if (item.getAttribute('href').substring(1) === current) {
+                    item.classList.add('active', 'bg-amber-50', 'text-primary', 'font-semibold');
+                    item.style.borderRight = '4px solid #78350f';
+                }
+            });
+        });
+
+        // --- Data Storage & State Management for Module 3 ---
+        const driversData = {
+            'ev': {
+                title: '新能源与轻量化 (SAM驱动)',
+                desc: '新能源汽车对电池包的安全性和车身轻量化提出极高要求。酚醛树脂因其卓越的阻燃性（遇火不燃烧，仅碳化发烟少），正大量取代部分传统塑料，用于电池隔热板、电机部件以及高性能摩擦片。'
+            },
+            'semi': {
+                title: '半导体与5G通讯 (高价值增长)',
+                desc: '在极大规模集成电路中，高纯度邻甲酚醛环氧树脂是半导体塑封料(EMC)的基体树脂；而在5G高频高速覆铜板中，特种改性酚醛也用作固化剂以提升耐热和介电性能。这是行业利润率最高、国产替代最迫切的领域。'
+            },
+            'policy': {
+                title: '消防与环保政策驱动 (大宗盘)',
+                desc: '全球对建筑外墙保温材料的防火等级要求日益严格。酚醛泡沫作为"保温材料之王"（B1/A级防火），在公共建筑和民用住宅领域的渗透率正逐步提升。同时，无醛/低醛树脂的研发也在顺应环保政策。'
+            }
+        };
+
+        function updateDriver(driverId) {
+            // Update Text
+            const titleEl = document.getElementById('driver-title');
+            const descEl = document.getElementById('driver-desc');
+            const boxEl = document.getElementById('driver-content-box');
+            
+            boxEl.style.opacity = '0.5';
+            setTimeout(() => {
+                titleEl.textContent = driversData[driverId].title;
+                descEl.textContent = driversData[driverId].desc;
+                boxEl.style.opacity = '1';
+                boxEl.style.transition = 'opacity 0.2s';
+            }, 100);
+
+            // Update Button Styling
+            document.querySelectorAll('#driver-buttons button').forEach(btn => {
+                btn.classList.remove('border-primary', 'text-primary', 'bg-amber-50', 'active-driver-btn');
+                btn.classList.add('border-slate-300', 'text-slate-600');
+            });
+
+            const activeBtn = document.getElementById(`btn-${driverId}`);
+            activeBtn.classList.remove('border-slate-300', 'text-slate-600');
+            activeBtn.classList.add('border-primary', 'text-primary', 'bg-amber-50', 'active-driver-btn');
+        }
+
+
+        // --- Data Storage & State Management for Module 5 (Unit Economics) ---
+        const ueData = {
+            'standard': {
+                insight: '在通用标准品市场，比拼的是规模效应和对上游原材料的议价能力，客户对价格极其敏感，切换成本低，因此LTV较短，但不需要复杂的验证，CAC也相对较低。',
+                metrics: [
+                    { label: '毛利水平', value: '10% - 15%', sub: '受大宗原料波动影响大' },
+                    { label: '收入模型', value: '成本加成', sub: '赚取加工费' },
+                    { label: '获客成本(CAC)', value: '较低', sub: '同质化竞争，看重价格' },
+                    { label: '客户终身价值(LTV)', value: '中低', sub: '忠诚度低，容易被替代' }
+                ]
+            },
+            'special': {
+                insight: '特种高端市场是典型的“长坡厚雪”模式。虽然前期打入供应链需要漫长的验证（极高的CAC），但一旦绑定，毛利丰厚且客户极少更换（极高的LTV），形成强现金流。',
+                metrics: [
+                    { label: '毛利水平', value: '35% - 45%+', sub: '享有技术与专利溢价' },
+                    { label: '收入模型', value: '价值定价', sub: '提供材料解决方案' },
+                    { label: '获客成本(CAC)', value: '极高', sub: '1-3年验证期，需配套研发' },
+                    { label: '客户终身价值(LTV)', value: '极高', sub: '强绑定，生命周期5年以上' }
+                ]
+            }
+        };
+
+        function renderUEMetrics(type) {
+            const container = document.getElementById('ue-content');
+            const data = ueData[type].metrics;
+            let html = '';
+            
+            // Highlight color based on type
+            const valueColor = type === 'standard' ? 'text-slate-700' : 'text-primary';
+            const bgClass = type === 'standard' ? 'bg-slate-50 border-slate-200' : 'bg-amber-50 border-amber-200';
+
+            data.forEach(m => {
+                html += `
+                    <div class="${bgClass} p-4 rounded-xl border flex flex-col justify-center items-center text-center transition-all">
+                        <div class="text-xs font-bold text-textmuted mb-2">${m.label}</div>
+                        <div class="text-xl md:text-2xl font-black ${valueColor} mb-1">${m.value}</div>
+                        <div class="text-xs text-textmuted">${m.sub}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            document.getElementById('ue-insight').innerHTML = ueData[type].insight;
+        }
+
+        function toggleUE(type) {
+            // Stylize buttons
+            const btnStandard = document.getElementById('toggle-standard');
+            const btnSpecial = document.getElementById('toggle-special');
+            
+            if(type === 'standard') {
+                btnStandard.classList.add('bg-white', 'text-textmain', 'shadow-sm');
+                btnStandard.classList.remove('text-textmuted');
+                btnSpecial.classList.remove('bg-white', 'text-textmain', 'shadow-sm');
+                btnSpecial.classList.add('text-textmuted');
+            } else {
+                btnSpecial.classList.add('bg-white', 'text-textmain', 'shadow-sm');
+                btnSpecial.classList.remove('text-textmuted');
+                btnStandard.classList.remove('bg-white', 'text-textmain', 'shadow-sm');
+                btnStandard.classList.add('text-textmuted');
+            }
+
+            renderUEMetrics(type);
+        }
+
+        // Initialize Module 5
+        toggleUE('standard');
+
+
+        // --- Chart.js Initializations ---
+        // Visualization & Content Choices:
+        // 1. Market Chart: Line + Bar combo. Goal: Show steady growth volume alongside YoY rate. 
+        // 2. Share Chart: Doughnut. Goal: Compare high-end market share, highlighting dominance of foreign vs domestic.
+        // 3. Valuation Chart: Horizontal Bar. Goal: Visually compare valuation multiples (PE) based on business nature.
+        // Libraries: Chart.js. NO SVG/Mermaid. Responsive config enforced.
+
+        Chart.defaults.font.family = "'Inter', 'PingFang SC', sans-serif";
+        Chart.defaults.color = '#52525b';
+
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // 1. Market Size Chart
+            const ctxMarket = document.getElementById('marketChart').getContext('2d');
+            new Chart(ctxMarket, {
+                type: 'bar',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024E', '2025E'],
+                    datasets: [{
+                        type: 'line',
+                        label: '同比增速 (%)',
+                        data: [3.5, 6.2, 4.1, 4.5, 4.8, 5.0],
+                        borderColor: '#ea580c', // accent orange
+                        backgroundColor: '#ea580c',
+                        borderWidth: 2,
+                        yAxisID: 'y1',
+                        tension: 0.3
+                    },{
+                        type: 'bar',
+                        label: '市场规模 (亿美元)',
+                        data: [125, 132, 138, 144, 151, 158],
+                        backgroundColor: '#78350f', // primary amber
+                        borderRadius: 4,
+                        yAxisID: 'y'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: false, position: 'left', min: 100 },
+                        y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false } }
+                    },
+                    plugins: { tooltip: { mode: 'index', intersect: false } }
+                }
+            });
+
+            // 2. Market Share Chart (High-end Focus)
+            const ctxShare = document.getElementById('shareChart').getContext('2d');
+            new Chart(ctxShare, {
+                type: 'doughnut',
+                data: {
+                    labels: ['日本企业 (住友等)', '欧美企业 (Hexion等)', '国内龙头 (圣泉/彤程)', '其他'],
+                    datasets: [{
+                        data: [45, 20, 25, 10],
+                        backgroundColor: [
+                            '#334155', // secondary
+                            '#64748b', // secondary light
+                            '#d97706', // primary light (Domestic focus)
+                            '#e4e4e7'  // border color
+                        ],
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12, font: {size: 11} } }
+                    }
+                }
+            });
+
+            // 3. Valuation Chart
+            const ctxValuation = document.getElementById('valuationChart').getContext('2d');
+            new Chart(ctxValuation, {
+                type: 'bar',
+                indexAxis: 'y', // Horizontal bar
+                data: {
+                    labels: ['纯传统化工基础树脂', '兼营高端材料的大型化工', '专注电子/半导体特种树脂'],
+                    datasets: [{
+                        label: '市盈率 (PE TTM) 中枢区间',
+                        data: [12, 22, 45],
+                        backgroundColor: [
+                            '#cbd5e1', // slate-300
+                            '#d97706', // amber-600
+                            '#1d4ed8'  // blue-700 (tech)
+                        ],
+                        borderRadius: 4,
+                        barThickness: 20
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        y: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: { label: function(c) { return 'PE: ~' + c.raw + 'x'; } }
+                        }
+                    }
+                }
+            });
+
+        });
+
+    </script>
+</body>
+</html>
