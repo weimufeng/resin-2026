@@ -61,7 +61,8 @@
         }
         .card {
             display: flex;
-            align-items: flex-start;
+            flex-direction: column;
+            justify-content: space-between;
             padding: 0.9rem 1rem;
             background: var(--surface);
             border: 1px solid var(--border);
@@ -70,6 +71,7 @@
             color: var(--text);
             transition: border-color 0.2s, background 0.2s;
             min-height: 78px;
+            cursor: pointer;
         }
         .card:hover {
             border-color: var(--accent);
@@ -85,6 +87,19 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             min-height: calc(1.35em * 2);
+        }
+        .card-actions {
+            margin-top: 0.5rem;
+        }
+        .text-report-link {
+            display: inline-block;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+        .text-report-link:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
         }
         footer {
             margin-top: 3rem;
@@ -111,79 +126,242 @@
             <p class="subtitle">Industry Research Report · 深度报告与交互图谱</p>
         </header>
         <nav class="list">
-            <a href="pages/advanced-semiconductor-manufacturing.html" class="card">
+            <div class="card" data-href="pages/underfill.html" role="link" tabindex="0" aria-label="2026​​底部填充胶行业深度研究报告">
+                <span class="card-title">2026​​底部填充胶行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1mcp41vFZb5KDXuASwIwcd5R1lkoJUASurHkDbXJaco4/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/proton-exchange-membrane.html" role="link" tabindex="0" aria-label="2026质子交换膜行业深度研究报告">
+                <span class="card-title">2026质子交换膜行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1PaAugtjKJ6PKX5QWpyh_eZLxP9ooIidD0DMKgBCek24/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/cyanate-ester.html" role="link" tabindex="0" aria-label="2026氰酸酯树脂（CE）行业深度研究报告">
+                <span class="card-title">2026氰酸酯树脂（CE）行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/13fxly4toCG8aqdy9uDdlkHJREKKEvJI56ypq2JLOmAM/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/cyanate-ester.html" role="link" tabindex="0" aria-label="2026氰酸酯树脂（CE）行业深度研究报告">
+                <span class="card-title">2026氰酸酯树脂（CE）行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/13fxly4toCG8aqdy9uDdlkHJREKKEvJI56ypq2JLOmAM/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/sulfone-polymer.html" role="link" tabindex="0" aria-label="2026聚醚砜（PES/PSU/PPSU）行业深度研究报告">
+                <span class="card-title">2026聚醚砜（PES/PSU/PPSU）行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1a-pSJwqMAC8sYaStH4mUFdTJMqGzpKHqEV-TylHpC-s/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/polyether-ether-ketone.html" role="link" tabindex="0" aria-label="2026聚醚醚酮（PEEK）行业深度研究报告">
+                <span class="card-title">2026聚醚醚酮（PEEK）行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1qk7tPs3XbJicT1036Xp0mzjfdlJQ4jWr-W7_7adUYXo/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/uhmwpe.html" role="link" tabindex="0" aria-label="2026超高分子量聚乙烯（UHMWPE）行业深度研究报告">
+                <span class="card-title">2026超高分子量聚乙烯（UHMWPE）行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1t5Yi1L1Iwk33zOvtdSJls_phGMP755SMUExFT1pEzJ8/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/polyimide-fiber.html" role="link" tabindex="0" aria-label="2026聚酰亚胺纤维行业深度研究报告">
+                <span class="card-title">2026聚酰亚胺纤维行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1CNRIjzwZINdl_YEnJSVhjFnaBva_93-ZQ0DJZFkiI8Y/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/hemodialysis-membrane-material.html" role="link" tabindex="0" aria-label="2026血液透析膜材料行业深度研究报告">
+                <span class="card-title">2026血液透析膜材料行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/13pUgwmwvJYilhp3cmDx_X-enR2nTx6RcBiPR6DJqoHY/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/chromatography-packing-material.html" role="link" tabindex="0" aria-label="2026色谱填料行业深度研究报告">
+                <span class="card-title">2026色谱填料行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1E6LPOArdeFk3JEn0nW1HmNdsamNqoBv53sdOjXCX3pY/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/para-aramid.html" role="link" tabindex="0" aria-label="2026对位芳纶行业深度研究报告">
+                <span class="card-title">2026对位芳纶行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/115STZIgeDp-6suyfR2U_UBaRwbcBqA_ORKb8wKHIM_I/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/plga-pcl.html" role="link" tabindex="0" aria-label="2026生物可降解植入材料行业深度研究报告">
+                <span class="card-title">2026生物可降解植入材料行业深度研究报告</span>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1tDoXyUcW_T9-isr533z5MMo5qKFxYRoD7tNjCAsCqHM/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/liquid-crystal-polymer.html" role="link" tabindex="0" aria-label="2026液晶聚合物行业深度研究报告">
                 <span class="card-title">2026液晶聚合物行业深度研究报告</span>
-            </a>
-            <a href="pages/advanced-semiconductor-manufacturing.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/11tQnC6UKuhPeSl77I5a7a5Im52E2CXP73ZP45l24GGU/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/pv-poe.html" role="link" tabindex="0" aria-label="2026光伏用聚烯烃弹性体行业深度研究报告">
                 <span class="card-title">2026光伏用聚烯烃弹性体行业深度研究报告</span>
-            </a>
-            <a href="pages/advanced-semiconductor-manufacturing.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/13HKJy-I4YJ7TXMc8EJvnypEqL0pf2ihT6HRLE-4KflI/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/advanced-semiconductor-manufacturing.html" role="link" tabindex="0" aria-label="2026先进制程设备行业深度研究报告">
                 <span class="card-title">2026先进制程设备行业深度研究报告</span>
-            </a>
-            <a href="pages/bmi-resins.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1K2IC4dmDNzQoez09yv8fQMBc0xFwI6UTZBd92xXUje4/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/bmi-resins.html" role="link" tabindex="0" aria-label="2026双马来酰亚胺（BMI）树脂行业深度研究报告">
                 <span class="card-title">2026双马来酰亚胺（BMI）树脂行业深度研究报告</span>
-            </a>
-            <a href="pages/computing-chip.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1msglRcw0D6-W3h-NFZ6cLGpwdb2_XACtQE2dGsZ2zCs/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/computing-chip.html" role="link" tabindex="0" aria-label="2026算力芯片行业深度研究报告">
                 <span class="card-title">2026算力芯片行业深度研究报告</span>
-            </a>
-            <a href="pages/conductive-adhesives.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/12VuxtKvJ9uqwbS0DOhojgnUiU_ECslEP21VamXxt8xw/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/conductive-adhesives.html" role="link" tabindex="0" aria-label="2026导电胶行业深度研究报告">
                 <span class="card-title">2026导电胶行业深度研究报告</span>
-            </a>
-            <a href="pages/daf-film.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1v09_UMIDpGZ57tF0SJiuBAqFUB7x4ZvmWuBEsghRxV8/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/daf-film.html" role="link" tabindex="0" aria-label="2026半导体封装DAF膜行业深度研究报告">
                 <span class="card-title">2026半导体封装DAF膜行业深度研究报告</span>
-            </a>
-            <a href="pages/eda-ip.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/14ecrTXLsnCC9QAwVOfhvSa5xtJS0bQW6G3Rxb06Czy4/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/eda-ip.html" role="link" tabindex="0" aria-label="2026EDA与半导体IP行业深度研究报告">
                 <span class="card-title">2026EDA与半导体IP行业深度研究报告</span>
-            </a>
-            <a href="pages/electronic-resin.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1NlDckHRWlBAqvibHtYs0rpkOxl0IwPaFvtmX-MBQINE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/electronic-resin.html" role="link" tabindex="0" aria-label="2026电子树脂材料行业深度研究报告">
                 <span class="card-title">2026电子树脂材料行业深度研究报告</span>
-            </a>
-            <a href="pages/high-purity-pfa.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1hsXqdFSDXL58gPdpxDp6ogVAT4BDI2heDpeF1Nmdom8/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/high-purity-pfa.html" role="link" tabindex="0" aria-label="2026高纯PFA（半导体级）行业深度研究报告">
                 <span class="card-title">2026高纯PFA（半导体级）行业深度研究报告</span>
-            </a>
-            <a href="pages/high-purity-ptfe.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1KEe0TQuiFuiy0_gJ7hWLY55QUl6TgPwfyTfnRynIiU4/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/high-purity-ptfe.html" role="link" tabindex="0" aria-label="2026高纯PTFE（半导体级）行业深度研究报告">
                 <span class="card-title">2026高纯PTFE（半导体级）行业深度研究报告</span>
-            </a>
-            <a href="pages/hydrocarbon-resins.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1_K1pdIRhMF3yqUYCU5ETPFBvRFDJBr5DldnDH13RnVc/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/hydrocarbon-resins.html" role="link" tabindex="0" aria-label="2026碳氢树脂（石油树脂）行业深度研究报告">
                 <span class="card-title">2026碳氢树脂（石油树脂）行业深度研究报告</span>
-            </a>
-            <a href="pages/paa-binder.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/109csWmMEncOaQYZ2OdL_v5VX8IayPkct230VYydR43I/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/paa-binder.html" role="link" tabindex="0" aria-label="2026锂电/钠电高端粘结剂PAA行业深度研究报告">
                 <span class="card-title">2026锂电/钠电高端粘结剂PAA行业深度研究报告</span>
-            </a>
-            <a href="pages/phenolic-resins.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1TWe717SAJRitnPyykT_b1bShDIAnsT9hyBndKplVSOw/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/phenolic-resins.html" role="link" tabindex="0" aria-label="2026酚醛树脂行业深度研究报告">
                 <span class="card-title">2026酚醛树脂行业深度研究报告</span>
-            </a>
-            <a href="pages/photoresist-materials.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1S6h3SUjeCAWMuHpy4oihA5GAG3GeT0xFuM9ub7xARZ0/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/photoresist-materials.html" role="link" tabindex="0" aria-label="2026光刻胶行业深度研究报告">
                 <span class="card-title">2026光刻胶行业深度研究报告</span>
-            </a>
-            <a href="pages/photosensitive-polyimide.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1lM5oTxWH8yrwveCYFjUWnv_qQqioWG_FbPrsyplL9Q8/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/photosensitive-polyimide.html" role="link" tabindex="0" aria-label="2026光敏聚酰亚胺(PSPI)行业深度研究报告">
                 <span class="card-title">2026光敏聚酰亚胺(PSPI)行业深度研究报告</span>
-            </a>
-            <a href="pages/polyimide-binder.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1K9qqHI_TVYi90FCCoeT4fgdPS5Txkj8L08YxLK5O1_8/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/polyimide-binder.html" role="link" tabindex="0" aria-label="2026锂电/钠电高端粘结剂PI(聚酰亚胺)行业深度研究报告">
                 <span class="card-title">2026锂电/钠电高端粘结剂PI(聚酰亚胺)行业深度研究报告</span>
-            </a>
-            <a href="pages/ppe-ppo-resins.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/19PrlbNG2EpUalsp-Zf53mZZJ7ag3IxRRXiPN52EV74g/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/ppe-ppo-resins.html" role="link" tabindex="0" aria-label="2026聚苯醚树脂（PPE/PPO）行业深度研究报告">
                 <span class="card-title">2026聚苯醚树脂（PPE/PPO）行业深度研究报告</span>
-            </a>
-            <a href="pages/power-semiconductor.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/14MQZTrk02s4phZW60RTYLz8kwnT3_CO4QO068lZdrbg/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/power-semiconductor.html" role="link" tabindex="0" aria-label="2026功率半导体行业深度研究报告">
                 <span class="card-title">2026功率半导体行业深度研究报告</span>
-            </a>
-            <a href="pages/pvdf-binder.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/108dLwkszOQLCdOqBsFQx2_u62m2qEtS2fT2DUZfZhRc/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/pvdf-binder.html" role="link" tabindex="0" aria-label="2026锂电/钠电高端粘结剂(PVDF)行业深度研究报告">
                 <span class="card-title">2026锂电/钠电高端粘结剂(PVDF)行业深度研究报告</span>
-            </a>
-            <a href="pages/ptfe-for-dry-electrode.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1OjmERJhSvKzFdhn0v1AqcIQedjTyzQs0osGfpJEDPVc/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/ptfe-for-dry-electrode.html" role="link" tabindex="0" aria-label="2026干法电极专用PTFE行业深度研究报告">
                 <span class="card-title">2026干法电极专用PTFE行业深度研究报告</span>
-            </a>
-            <a href="pages/solid-state-batteries.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1pTmT92y2A01yCnwo6NaSadfi_3cNUJKYRZhs_LzYq_U/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/solid-state-batteries.html" role="link" tabindex="0" aria-label="2026固态电池行业深度研究报告">
                 <span class="card-title">2026固态电池行业深度研究报告</span>
-            </a>
-            <a href="pages/ssb-polyelectrolyte.html" class="card">
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/120FwU2nl0uJQQDQAV-b2QXvZSgwxHIZ6UVIz8gbyBu0/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
+            <div class="card" data-href="pages/ssb-polyelectrolyte.html" role="link" tabindex="0" aria-label="2026固态电池高分子电解质基体行业深度研究报告">
                 <span class="card-title">2026固态电池高分子电解质基体行业深度研究报告</span>
-            </a>
+                <div class="card-actions">
+                    <a class="text-report-link" href="https://docs.google.com/document/d/1sTTHXhE-lXLKvqXnjlSg4qxG19n6MCJ0qxIkejIszPo/edit?usp=sharing" target="_blank" rel="noopener noreferrer">文字版完整报告</a>
+                </div>
+            </div>
         </nav>
         <footer>
             基于模拟数据的行业研究演示框架 | 数据仅供结构展示，不构成投资建议<br><br>作者：魏牧丰
         </footer>
     </div>
+    <script>
+        for (const card of document.querySelectorAll('.card[data-href]')) {
+            card.addEventListener('click', (e) => {
+                const href = card.getAttribute('data-href');
+                if (!href) return;
+                window.location.href = href;
+            });
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const href = card.getAttribute('data-href');
+                    if (!href) return;
+                    window.location.href = href;
+                }
+            });
+        }
+        for (const link of document.querySelectorAll('.text-report-link')) {
+            link.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+    </script>
 </body>
 </html>

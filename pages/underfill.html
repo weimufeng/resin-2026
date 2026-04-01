@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深度行业报告：半导体底部填充胶 (Underfill) 市场全景解析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chosen Palette: Slate & Teal (Neutral slate for professional background, Teal/Cyan for tech-focused data highlights, Amber for warnings/risks) -->
+    <!-- Application Structure Plan: Dashboard Layout with Sidebar Navigation. Chosen because a comprehensive 8-module report contains dense information. A linear scroll would be exhausting. A sidebar allows users to quickly jump between the Executive Summary, Market Data, and Value Chain based on their immediate needs (e.g., an investor jumping straight to 'Investment Thesis'). The main content area dynamically updates, keeping the user anchored. -->
+    <!-- Visualization & Content Choices: 
+        1. Market Size (Goal: Inform/Compare) -> Bar/Line Combo Chart -> Toggle between Global/China -> Shows growth trend clearly -> Chart.js.
+        2. Market Share (Goal: Proportions) -> Doughnut Chart -> Hover for exact percentages -> Highlights oligopoly -> Chart.js.
+        3. Tech Roadmap (Goal: Compare multiple variables) -> Radar Chart -> Compare CUF, MUF, WLUF across Cost, Maturity, Performance -> Chart.js.
+        4. Value Chain (Goal: Organize/Relationships) -> Interactive CSS Grid/Flex panels -> Click Up/Mid/Downstream to view BOM and key players -> HTML/JS. 
+        Confirming NO SVG/Mermaid used. 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans SC', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .nav-item.active { background-color: #0d9488; color: white; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.4); }
+        .nav-item:not(.active):hover { background-color: #e2e8f0; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row h-screen overflow-hidden">
+
+    <nav class="w-full md:w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col shadow-xl z-20">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-teal-400 tracking-wider">UNDERFILL<br><span class="text-sm text-slate-400 font-normal">行业深度解析报告</span></h1>
+        </div>
+        <div class="flex-1 overflow-y-auto hide-scrollbar py-4 px-3 space-y-2 flex flex-row md:flex-col">
+            <button onclick="switchTab('m1')" id="nav-m1" class="nav-item active w-full text-left px-4 py-3 rounded-lg transition-all flex items-center whitespace-nowrap md:whitespace-normal">🎯 一、 执行摘要</button>
+            <button onclick="switchTab('m2')" id="nav-m2" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-all flex items-center whitespace-nowrap md:whitespace-normal">📖 二、 行业概况</button>
+            <button onclick="switchTab('m3')" id="nav-m3" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-all flex items-center whitespace-nowrap md:whitespace-normal">📊 三、 市场分析</button>
+            <button onclick="switchTab('m4')" id="nav-m4" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-all flex items-center whitespace-nowrap md:whitespace-normal">🔗 四、 产业链图谱</button>
+            <button onclick="switchTab('m5')" id="nav-m5" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-all flex items-center whitespace-nowrap md:whitespace-normal">⚔️ 五、 竞争格局</button>
+            <button onclick="switchTab('m6')" id="nav-m6" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-all flex items-center whitespace-nowrap md:whitespace-normal">🔬 六、 技术演进</button>
+            <button onclick="switchTab('m7')" id="nav-m7" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-all flex items-center whitespace-nowrap md:whitespace-normal">⚠️ 七、 宏观与风险</button>
+            <button onclick="switchTab('m8')" id="nav-m8" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-all flex items-center whitespace-nowrap md:whitespace-normal">💡 八、 投资逻辑</button>
+        </div>
+    </nav>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8 scroll-smooth" id="main-content">
+
+        <section id="m1" class="tab-pane block fade-in">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-teal-500 inline-block pb-2">一、 执行摘要 (Executive Summary)</h2>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    本模块是整个行业报告的“心脏”。它提炼了底部填充胶（Underfill）市场的核心驱动力、当前所处的生命周期阶段以及最终的投资评级。您可以在这里快速把握该行业的宏观定调。
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="glass-panel p-6 rounded-xl shadow-sm border-l-4 border-teal-500">
+                        <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">核心结论 / 行业周期</h3>
+                        <p class="text-3xl font-bold text-slate-800 mb-2">成长期爆发前夜 <span class="text-xl">🚀</span></p>
+                        <p class="text-slate-600 text-sm">传统封装用胶已处于成熟期，但由 <strong>2.5D/3D先进封装（如CoWoS、HBM、Chiplet）</strong> 驱动的高端Underfill正处于高爆发、高壁垒的导入至成长期阶段。</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-xl shadow-sm border-l-4 border-indigo-500">
+                        <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">投资建议 / 评级</h3>
+                        <p class="text-3xl font-bold text-indigo-700 mb-2">超配 (Overweight) <span class="text-xl">📈</span></p>
+                        <p class="text-slate-600 text-sm">强烈建议关注具备核心树脂合成能力及配方Know-how，且已进入头部OSAT（外包封测厂）供应链的国产新锐企业。国产替代空间巨大。</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-slate-800 mb-4">Top 3 行业关键词</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-lg shadow border border-slate-100 hover:shadow-md transition">
+                        <div class="text-2xl mb-2">🧠</div>
+                        <h4 class="font-bold text-slate-800 mb-1">AI算力驱动 (Advanced Pkg)</h4>
+                        <p class="text-xs text-slate-500">AI芯片尺寸增大、I/O密度剧增，使得FCBGA及CoWoS对高性能毛细底填胶（CUF）及塑封底填胶（MUF）的需求呈指数级上升。</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border border-slate-100 hover:shadow-md transition">
+                        <div class="text-2xl mb-2">🇨🇳</div>
+                        <h4 class="font-bold text-slate-800 mb-1">国产替代 (Import Substitution)</h4>
+                        <p class="text-xs text-slate-500">目前全球80%以上高端市场由日美企业（Namics, Henkel）垄断。地缘政治及降本诉求为国产化撕开巨大口子。</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow border border-slate-100 hover:shadow-md transition">
+                        <div class="text-2xl mb-2">🧪</div>
+                        <h4 class="font-bold text-slate-800 mb-1">配方壁垒 (Formulation Know-how)</h4>
+                        <p class="text-xs text-slate-500">核心不仅在于买到好填料，更在于树脂、固化剂与硅微粉界面的偶联处理，要在极小间距内实现高流动性与低CTE的平衡。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="m2" class="tab-pane hidden fade-in">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-teal-500 inline-block pb-2">二、 行业概况与基本属性</h2>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    本模块定义了Underfill的研究边界，梳理了其技术发展演进史，并深入剖析了该行业的底层商业逻辑和盈利模式。
+                </p>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">🔍 定义与分类</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        <strong>底部填充胶 (Underfill)</strong> 是一种液态环氧树脂基的高分子材料，主要用于倒装芯片（Flip-Chip）、BGA、CSP等封装形式中。它通过毛细作用或施加压力，填充芯片与基板（或另一芯片）之间的微小空隙，随后加热固化。
+                        <br><br><strong>核心作用：</strong> 消除芯片（硅）与基板（有机材料）之间因热膨胀系数（CTE）不匹配而产生的热应力，保护脆弱的锡球（Solder Bumps）免受机械和热疲劳断裂，极大提高芯片可靠性。
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-semibold">毛细底填胶 (CUF)</span>
+                        <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-semibold">非流动底填胶 (NUF)</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">晶圆级底填胶 (WLUF)</span>
+                        <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold">塑封底填胶 (MUF/GMC)</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">⏳ 发展历程</h3>
+                        <div class="relative border-l-2 border-slate-300 ml-3 space-y-6">
+                            <div class="pl-6 relative">
+                                <div class="absolute w-4 h-4 bg-slate-300 rounded-full -left-[9px] top-1"></div>
+                                <h4 class="font-bold text-slate-800">1990s: 导入期 (PC时代)</h4>
+                                <p class="text-xs text-slate-500 mt-1">IBM发明倒装芯片，Underfill首次被引入以解决大型芯片发热带来的封装失效问题。</p>
+                            </div>
+                            <div class="pl-6 relative">
+                                <div class="absolute w-4 h-4 bg-slate-300 rounded-full -left-[9px] top-1"></div>
+                                <h4 class="font-bold text-slate-800">2010s: 普及期 (移动互联)</h4>
+                                <p class="text-xs text-slate-500 mt-1">智能手机轻薄化推动CSP及小型化FC技术普及，CUF成为标准配置。点胶工艺成熟。</p>
+                            </div>
+                            <div class="pl-6 relative">
+                                <div class="absolute w-4 h-4 bg-teal-500 rounded-full -left-[9px] top-1 ring-4 ring-teal-100"></div>
+                                <h4 class="font-bold text-teal-700">2020s-至今: 爆发期 (AI & 2.5D/3D)</h4>
+                                <p class="text-xs text-slate-600 mt-1">CoWoS、Chiplet异构集成要求Bump间距缩小至几十微米。MUF及高填充、极低CTE的新一代底填胶成为核心“卡脖子”环节。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">💰 商业模式透视</h3>
+                        <div class="bg-slate-100 p-5 rounded-lg">
+                            <ul class="space-y-4">
+                                <li class="flex items-start">
+                                    <span class="text-xl mr-3">💎</span>
+                                    <div>
+                                        <h5 class="font-bold text-slate-800 text-sm">技术溢价 (High Margin)</h5>
+                                        <p class="text-xs text-slate-500">非大宗化工品。材料成本极低（树脂+硅微粉），但附加值极高。高端产品毛利率普遍在 <span class="font-bold text-teal-600">50% - 70%</span> 之间。</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-xl mr-3">🔗</span>
+                                    <div>
+                                        <h5 class="font-bold text-slate-800 text-sm">强客户粘性 (High Switching Cost)</h5>
+                                        <p class="text-xs text-slate-500">半导体材料认证周期长（通常1-2年）。一旦导入OSAT量产线，考虑到更换材料带来的良率风险，客户极少轻易更换供应商。</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-xl mr-3">🔄</span>
+                                    <div>
+                                        <h5 class="font-bold text-slate-800 text-sm">联合开发 (Co-development)</h5>
+                                        <p class="text-xs text-slate-500">不仅是卖胶水，更是卖解决方案。头部胶企需与台积电、长电科技等在先进封装研发初期就深度绑定，定制配方。</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="m3" class="tab-pane hidden fade-in">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-teal-500 inline-block pb-2">三、 市场规模与需求分析</h2>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    本模块通过量化数据展示TAM（总体潜在市场），分析底层驱动因素。我们通过可交互图表为您呈现全球与中国市场的规模增速对比。
+                </p>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                    <div class="flex justify-between items-end mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800">市场空间 (TAM) 与预测</h3>
+                            <p class="text-xs text-slate-500 mt-1">单位：亿美元 | 预测期：2021-2026E</p>
+                        </div>
+                        <div class="space-x-2">
+                            <button onclick="updateMarketChart('global')" class="px-3 py-1 text-xs font-bold rounded bg-teal-600 text-white hover:bg-teal-700 transition">全球市场</button>
+                            <button onclick="updateMarketChart('china')" class="px-3 py-1 text-xs font-bold rounded bg-slate-200 text-slate-700 hover:bg-slate-300 transition">中国市场</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Container as required -->
+                    <div class="chart-container w-full max-w-4xl mx-auto h-[350px]">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-panel p-5 rounded-lg border-l-4 border-amber-400">
+                        <h4 class="font-bold text-slate-800 mb-2">🚀 核心驱动因素</h4>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                            <li><strong>AI与高算力芯片 (HPC):</strong> GPU芯片尺寸逼近光刻极限(Reticle limit)，Chiplet技术将多个Die拼装，产生海量的内部微凸点(Micro-bump)，大幅增加单颗芯片的底填胶用量。</li>
+                            <li><strong>HBM (高带宽内存):</strong> HBM堆叠结构（如8H/12H）不仅层间需要极薄的填充，且整体包覆越来越倾向于使用MUF（如SK海力士的MR-MUF工艺），带来纯增量市场。</li>
+                            <li><strong>智能汽车电子:</strong> 车规级芯片对热冲击及振动的苛刻要求，使得车规级Underfill渗透率快速提升。</li>
+                        </ul>
+                    </div>
+                    <div class="glass-panel p-5 rounded-lg border-l-4 border-teal-500">
+                        <h4 class="font-bold text-slate-800 mb-2">📊 渗透率分析</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-2">
+                            目前行业呈现<strong>“双轨发展”</strong>态势：
+                        </p>
+                        <div class="space-y-3 mt-3">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-bold">消费级/传统FCBGA (红海)</span><span>渗透率 ~95%</span></div>
+                                <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-slate-400 h-1.5 rounded-full" style="width: 95%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-bold text-teal-700">先进封装级 (2.5D/3D/HBM) (蓝海爆发前夜)</span><span>渗透率 ~15%</span></div>
+                                <div class="w-full bg-slate-200 rounded-full h-1.5"><div class="bg-teal-500 h-1.5 rounded-full" style="width: 15%"></div></div>
+                                <p class="text-xs text-slate-400 mt-1">技术壁垒极高，目前处于供不应求及工艺快速迭代期。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="m4" class="tab-pane hidden fade-in">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-teal-500 inline-block pb-2">四、 产业链全景图谱</h2>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    本模块拆解了从上游原材料到下游封测应用的完整链条。点击下方的产业链环节，可查看相应的成本拆解、痛点分析及代表企业。
+                </p>
+
+                <!-- Interactive Value Chain Flow -->
+                <div class="flex flex-col md:flex-row justify-between items-center bg-slate-100 p-4 rounded-xl gap-4 mb-6">
+                    <button onclick="updateValueChain('up')" id="btn-up" class="w-full md:w-1/3 p-4 bg-white border-2 border-indigo-500 text-indigo-700 font-bold rounded-lg shadow-sm hover:shadow-md transition">1. 上游: 原材料设备</button>
+                    <div class="text-2xl text-slate-400 hidden md:block">⏩</div>
+                    <button onclick="updateValueChain('mid')" id="btn-mid" class="w-full md:w-1/3 p-4 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg shadow-sm hover:shadow-md hover:border-teal-500 transition">2. 中游: 配方与制造</button>
+                    <div class="text-2xl text-slate-400 hidden md:block">⏩</div>
+                    <button onclick="updateValueChain('down')" id="btn-down" class="w-full md:w-1/3 p-4 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg shadow-sm hover:shadow-md hover:border-teal-500 transition">3. 下游: 封测与终端</button>
+                </div>
+
+                <!-- Dynamic Content Area for Value Chain -->
+                <div id="vc-content" class="bg-white p-6 rounded-xl shadow border border-slate-200 min-h-[300px] transition-all">
+                    <!-- Default loaded content (Upstream) -->
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="w-full md:w-1/2">
+                            <h3 class="text-xl font-bold text-indigo-700 mb-3">上游核心痛点：原材料“卡脖子”</h3>
+                            <p class="text-sm text-slate-600 mb-4">底层材料科学是最大的瓶颈。高端底填胶极度依赖进口的特种环氧树脂和纳米级球形硅微粉。</p>
+                            <ul class="space-y-2 text-sm text-slate-700">
+                                <li class="p-2 bg-indigo-50 rounded border border-indigo-100"><strong>核心材料 1：</strong> 特种环氧树脂 (低粘度、高纯度)。主要由日本DIC、三菱化学垄断。</li>
+                                <li class="p-2 bg-indigo-50 rounded border border-indigo-100"><strong>核心材料 2：</strong> 亚微米/纳米级球形硅微粉。用于降低CTE。日本Admatechs(雅都玛)、Denka垄断高端市场超80%份额。</li>
+                                <li class="p-2 bg-indigo-50 rounded border border-indigo-100"><strong>核心材料 3：</strong> 固化剂及偶联剂。</li>
+                            </ul>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            <h3 class="text-lg font-bold text-slate-800 mb-3">上游 BOM 成本拆解 (近似值)</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <div class="w-24 text-xs font-bold text-slate-600">硅微粉 (45%)</div>
+                                    <div class="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden"><div class="bg-indigo-500 h-full" style="width: 45%"></div></div>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-24 text-xs font-bold text-slate-600">环氧树脂 (35%)</div>
+                                    <div class="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden"><div class="bg-indigo-400 h-full" style="width: 35%"></div></div>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-24 text-xs font-bold text-slate-600">添加剂等 (20%)</div>
+                                    <div class="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden"><div class="bg-indigo-300 h-full" style="width: 20%"></div></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded text-xs text-slate-500">
+                                <strong>掌握话语权者：</strong> 上游高端粉体供应商目前议价能力极强，国内企业如联瑞新材正加速追赶高端球硅产能。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="m5" class="tab-pane hidden fade-in">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-teal-500 inline-block pb-2">五、 竞争格局与护城河</h2>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    本模块展示当前全球市场的寡头垄断现状，并利用波特五力模型分析行业竞争态势。国产替代势在必行，但面临极高的验证壁垒。
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow border border-slate-200">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">全球市场份额估算 (CR5 > 80%)</h3>
+                        <p class="text-xs text-slate-500 mb-4">高度集中的寡头市场，日美系主导。</p>
+                        <!-- Chart Container as required -->
+                        <div class="chart-container w-full h-[250px] flex justify-center">
+                            <canvas id="shareChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">五力模型简析</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3 bg-slate-50 rounded border border-slate-200 text-sm">
+                                <span class="font-bold text-red-600">现有竞争 (低)</span>
+                                <p class="text-xs text-slate-500 mt-1">头部几家各占细分优势，打价格战意愿低，重技术迭代。</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded border border-slate-200 text-sm">
+                                <span class="font-bold text-teal-600">潜在进入者 (极难)</span>
+                                <p class="text-xs text-slate-500 mt-1">配方壁垒+车规/先进制程漫长的OSAT验证周期阻断了小厂。</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded border border-slate-200 text-sm">
+                                <span class="font-bold text-green-600">替代品威胁 (无)</span>
+                                <p class="text-xs text-slate-500 mt-1">FCBGA等封装结构物理刚需，目前无其他低成本材料可替代底填作用。</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded border border-slate-200 text-sm">
+                                <span class="font-bold text-orange-600">下游议价力 (中)</span>
+                                <p class="text-xs text-slate-500 mt-1">OSAT/Foundry很强势，但因胶水占整个芯片成本极低且影响极大，他们更看重良率而非降价。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-slate-800 mb-4">重点企业画像 (Player Profiles)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 hover:border-teal-500 transition cursor-pointer">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-bold text-slate-800">Namics (纳美仕)</h4>
+                            <span class="text-xs bg-slate-200 px-2 py-1 rounded">日本 🇯🇵</span>
+                        </div>
+                        <p class="text-xs text-slate-600"><strong>壁垒：</strong> 绝对霸主。拥有最强的高端CUF配方库，垄断先进制程(苹果A系列等)及车规级高端市场。填料分散技术独步全球。</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 hover:border-teal-500 transition cursor-pointer">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-bold text-slate-800">Henkel (汉高)</h4>
+                            <span class="text-xs bg-slate-200 px-2 py-1 rounded">德国 🇩🇪</span>
+                        </div>
+                        <p class="text-xs text-slate-600"><strong>壁垒：</strong> 通过收购Dexter等整合市场。产品线全面，不仅是Underfill，在导热材料(TIM)等周边材料布局深厚，提供一站式方案。</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 border-l-4 border-l-teal-500 hover:border-teal-600 transition cursor-pointer">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-bold text-teal-800">国产新势力</h4>
+                            <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded">中国 🇨🇳</span>
+                        </div>
+                        <p class="text-xs text-slate-600"><strong>代表：</strong> 华海诚科、德邦科技、回天新材等。<br><strong>现状：</strong> 已在消费电子级大批量出货，正全力冲击长电、通富等OSAT的高端先进封装产线验证。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="m6" class="tab-pane hidden fade-in">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-teal-500 inline-block pb-2">六、 技术路径与研发趋势</h2>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    技术迭代是材料行业发展的生命线。本模块对比了当前主流技术，并指出了为适应3D异构集成即将到来的颠覆性材料变革。
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">主流技术路线对比</h3>
+                        <p class="text-xs text-slate-500 mb-4">核心权衡：流动性 (影响工艺速度) vs 填充率 (影响CTE与可靠性)</p>
+                        <!-- Chart Container as required -->
+                        <div class="chart-container w-full max-w-sm mx-auto h-[300px]">
+                            <canvas id="techRadarChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col justify-center space-y-4">
+                        <div class="p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-teal-700 mb-1">毛细底填 (CUF) - 当前主流</h4>
+                            <p class="text-xs text-slate-600">原理是在芯片边缘点胶，靠毛细力吸入。<strong>挑战：</strong> Bump间距小于30um时，流动极慢，甚至产生空洞(Void)。必须使用纳米级填料，导致成本剧增。</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-indigo-700 mb-1">塑封底填 (MUF/GMC) - 高增长</h4>
+                            <p class="text-xs text-slate-600">将Underfill与整体塑封(EMC)合二为一。极大提升了产出率(UPH)。目前在HBM内存堆叠中被SK海力士大规模采用并证明其优越性。</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg shadow-sm border border-slate-200">
+                            <h4 class="font-bold text-purple-700 mb-1">晶圆级底填 (WLUF) - 未来巅峰</h4>
+                            <p class="text-xs text-slate-600">在晶圆划片前，直接将底填膜(Film)贴敷在整片晶圆上。能完美解决极细间距互连问题，是真正面向3D/Chiplet的终极形态，极具技术壁垒。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="m7" class="tab-pane hidden fade-in">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-teal-500 inline-block pb-2">七、 政策环境与宏观风险</h2>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    材料行业的发展不仅取决于技术，也受宏观经济、地缘政治和供应链安全的高度影响。
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-6 rounded-xl border border-slate-200">
+                        <div class="text-3xl mb-3">🏛️</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">政策与产业导向</h3>
+                        <ul class="space-y-3 text-sm text-slate-600">
+                            <li><strong>供应链自主可控：</strong> 芯片法案及各类制裁加剧了国内晶圆厂及封测厂的断供焦虑。<strong>"去美化/去日化"</strong> 成为国内OSAT的硬性KPI，为国产底填胶开启了前所未有的验证窗口。</li>
+                            <li><strong>大基金扶持：</strong> 国家集成电路产业投资基金（大基金）二期、三期逐步向设备与材料端倾斜，相关材料企业融资及扩产获得强力背书。</li>
+                            <li><strong>标准建立：</strong> 国内集成电路材料联盟正在逐步推行材料国产化验证标准，缩短漫长的认证周期。</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-amber-50 to-red-50 p-6 rounded-xl border border-red-100">
+                        <div class="text-3xl mb-3">⚡</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">宏观与微观风险提示</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-bold text-red-800 text-sm">1. 研发与验证不及预期</h4>
+                                <p class="text-xs text-red-600 mt-1">高端产品研发极耗资金，且若在OSAT的量产线验证失败（导致芯片报废），将被长期打入冷宫。</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-red-800 text-sm">2. 上游原材“断粮”风险</h4>
+                                <p class="text-xs text-red-600 mt-1">高端球硅和特种树脂高度依赖日本进口，一旦遭遇贸易管制，中游配方厂将面临无米之炊。</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-red-800 text-sm">3. 价格战向中低端蔓延</h4>
+                                <p class="text-xs text-red-600 mt-1">随着国内入局者增多，在消费电子等成熟封装领域，可能出现为抢占份额而导致的恶性价格战，拉低整体毛利率。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="m8" class="tab-pane hidden fade-in">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4 border-b-4 border-teal-500 inline-block pb-2">八、 结论与投资逻辑</h2>
+                <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                    本报告的最终落脚点。如何在底部填充胶赛道中筛选出真正的Alpha？市场目前的共识是什么？我们又看到了哪些差异化陷阱？
+                </p>
+
+                <div class="bg-slate-900 text-white p-6 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-bold text-teal-400 mb-4">🏆 关键成功要素 (KSF - Key Success Factors)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        <div class="bg-slate-800 p-4 rounded text-sm">
+                            <span class="block text-2xl mb-2">🧪</span>
+                            <strong class="block text-white mb-1">配方微调能力</strong>
+                            <span class="text-slate-400 text-xs">不仅是买材料混合，而是根据客户芯片热分布进行定制化偶联处理与流变学调优。</span>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded text-sm">
+                            <span class="block text-2xl mb-2">🤝</span>
+                            <strong class="block text-white mb-1">生态绑定能力</strong>
+                            <span class="text-slate-400 text-xs">能打入长电、通富、日月光等Tier 1 OSAT厂，拥有共同研发实验室的厂商赢面最大。</span>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded text-sm">
+                            <span class="block text-2xl mb-2">⛓️</span>
+                            <strong class="block text-white mb-1">上游资源锁定力</strong>
+                            <span class="text-slate-400 text-xs">在特种硅微粉供不应求背景下，能保障高端原料稳定供应的企业才具备放量基础。</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">📈 估值逻辑 (Valuation)</h3>
+                        <p class="text-sm text-slate-600 mb-3">
+                            作为半导体材料板块，市场通常给予较高的溢价。主要估值锚点在于<strong>国产渗透率拐点</strong>。
+                        </p>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                            <li><strong>导入期企业 (重PS):</strong> 尚未大规模盈利，但产品刚进入头部客户验证池，按市销率(P/S)估值，弹性极大。</li>
+                            <li><strong>放量期企业 (重PE/PEG):</strong> 已经形成规模化替代，利润快速释放，享有30x-50x的高PE，需关注业绩增速能否消化高估值。</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-teal-50 p-5 rounded-lg border border-teal-200">
+                        <h3 class="text-lg font-bold text-teal-800 mb-3">💡 差异化观点 (Beyond Consensus)</h3>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-3">
+                            <strong>市场共识：</strong> 国产替代空间大，随便投一家做底填胶的都能起飞。
+                        </p>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            <strong>我们的洞察 (陷阱)：</strong> 警惕“假国产化”。许多国内小厂仅做低端消费类CUF的低价倾销，技术含量极低。真正的壁垒在于 <strong>FCBGA及先进封装(2.5D/3D)用胶</strong>。投资时不应只看其“总体产能”，必须穿透去看其在 <strong>高频高速通讯、GPU/AI芯片封装端</strong> 的出货占比。下一个黄金增量在于能突破 <strong>MUF (塑封底填)</strong> 工艺瓶颈的材料商。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- 1. Tab Navigation Logic ---
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            // Show target tab
+            const target = document.getElementById(tabId);
+            target.classList.remove('hidden');
+            target.classList.add('block');
+            
+            // Update nav styling
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active', 'bg-teal-600', 'text-white');
+                el.classList.add('text-slate-300');
+            });
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.classList.add('active');
+            
+            // Re-render/Resize charts if they become visible to prevent canvas squishing
+            if(tabId === 'm3' && window.myMarketChart) window.myMarketChart.resize();
+            if(tabId === 'm5' && window.myShareChart) window.myShareChart.resize();
+            if(tabId === 'm6' && window.myRadarChart) window.myRadarChart.resize();
+
+            // Mobile: scroll to top
+            if(window.innerWidth < 768) {
+                document.getElementById('main-content').scrollTop = 0;
+            }
+        }
+
+        // --- 2. Chart.js Global Settings ---
+        Chart.defaults.font.family = "'Noto Sans SC', sans-serif";
+        Chart.defaults.color = '#64748b';
+
+        // --- 3. Market Size Chart (Module 3) ---
+        const marketData = {
+            global: {
+                labels: ['2021', '2022', '2023', '2024E', '2025E', '2026E'],
+                data: [2.8, 3.1, 3.5, 4.0, 4.6, 5.3],
+                growth: [null, 10.7, 12.9, 14.2, 15.0, 15.2],
+                label: '全球市场规模 (亿美元)'
+            },
+            china: {
+                labels: ['2021', '2022', '2023', '2024E', '2025E', '2026E'],
+                data: [0.6, 0.75, 0.9, 1.15, 1.45, 1.8],
+                growth: [null, 25.0, 20.0, 27.7, 26.0, 24.1],
+                label: '中国市场规模 (亿美元)'
+            }
+        };
+
+        const ctxMarket = document.getElementById('marketChart').getContext('2d');
+        window.myMarketChart = new Chart(ctxMarket, {
+            type: 'bar',
+            data: {
+                labels: marketData.global.labels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: '同比增速 (%)',
+                        data: marketData.global.growth,
+                        borderColor: '#f59e0b',
+                        backgroundColor: '#f59e0b',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        yAxisID: 'y1',
+                    },
+                    {
+                        type: 'bar',
+                        label: marketData.global.label,
+                        data: marketData.global.data,
+                        backgroundColor: 'rgba(13, 148, 136, 0.8)',
+                        borderRadius: 4,
+                        yAxisID: 'y',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // CRITICAL for CSS container control
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) label += context.parsed.y + (context.dataset.type === 'line' ? '%' : '');
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { type: 'linear', display: true, position: 'left', title: { display: true, text: '规模 (亿美元)' } },
+                    y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '增速 (%)' } }
+                }
+            }
+        });
+
+        window.updateMarketChart = function(region) {
+            const data = marketData[region];
+            window.myMarketChart.data.datasets[0].data = data.growth;
+            window.myMarketChart.data.datasets[1].data = data.data;
+            window.myMarketChart.data.datasets[1].label = data.label;
+            window.myMarketChart.update();
+        };
+
+        // --- 4. Value Chain Interactive Logic (Module 4) ---
+        const vcData = {
+            up: {
+                title: "上游核心痛点：原材料“卡脖子”",
+                color: "indigo",
+                desc: "底层材料科学是最大的瓶颈。高端底填胶极度依赖进口的特种环氧树脂和纳米级球形硅微粉。",
+                list: [
+                    "<strong>核心材料 1：</strong> 特种环氧树脂 (低粘度、高纯度)。主要由日本DIC、三菱化学垄断。",
+                    "<strong>核心材料 2：</strong> 亚微米/纳米级球形硅微粉。用于降低CTE。日本Admatechs(雅都玛)、Denka垄断高端市场超80%份额。",
+                    "<strong>核心材料 3：</strong> 固化剂及特殊偶联剂体系。"
+                ],
+                bomTitle: "上游 BOM 成本拆解 (近似值)",
+                bom: [
+                    { name: "硅微粉 (45%)", val: 45, col: "bg-indigo-500" },
+                    { name: "环氧树脂 (35%)", val: 35, col: "bg-indigo-400" },
+                    { name: "添加剂等 (20%)", val: 20, col: "bg-indigo-300" }
+                ],
+                summary: "<strong>掌握话语权者：</strong> 上游高端粉体供应商目前议价能力极强，国内企业如联瑞新材正加速追赶高端球硅产能。"
+            },
+            mid: {
+                title: "中游核心痛点：配方Know-How与均质化",
+                color: "teal",
+                desc: "中游企业看似只是“混料”，实则是核心配方掌握者。如同厨师炒菜，一样的食材，火候和比例决定了米其林还是路边摊。",
+                list: [
+                    "<strong>配方设计：</strong> 平衡“高流动性”、“低热膨胀系数(CTE)”、“高Tg点”之间的物理矛盾。",
+                    "<strong>分散工艺：</strong> 确保纳米级硅微粉在树脂中均匀分散，不团聚、不沉降。需要极高的脱泡及混合工艺。",
+                    "<strong>储存与运输：</strong> 高端产品需在 -40℃ 环境下冷链运输，解冻后使用寿命(Pot life)极短。"
+                ],
+                bomTitle: "中游利润与附加值结构",
+                bom: [
+                    { name: "原材料成本 (30-40%)", val: 35, col: "bg-teal-300" },
+                    { name: "制造与折旧 (10-15%)", val: 15, col: "bg-teal-400" },
+                    { name: "毛利润 (50-60%)", val: 50, col: "bg-teal-500" }
+                ],
+                summary: "<strong>掌握话语权者：</strong> 具备自主专利配方及先进制程试错能力的日美巨头(Namics)。"
+            },
+            down: {
+                title: "下游核心痛点：漫长的验证与良率焦虑",
+                color: "blue",
+                desc: "终端应用主要为消费电子、HPC、汽车。实际采购决策者是封测厂(OSAT)及晶圆代工厂(Foundry)。",
+                list: [
+                    "<strong>验证周期长：</strong> 导入新供应商需经过材料级、器件级、可靠性级(TC冷热冲击千次以上)测试，耗时1-2年。",
+                    "<strong>试错成本极高：</strong> 一瓶几百块的胶水如果失效，可能导致价值数万元的GPU/AI芯片整板报废，因此OSAT极度保守。",
+                    "<strong>联合开发趋势：</strong> 随着CoWoS等先进封装兴起，封装厂必须在芯片设计阶段就拉入胶水厂共同研发。"
+                ],
+                bomTitle: "下游应用场景分布预测",
+                bom: [
+                    { name: "智能手机/PC (40%)", val: 40, col: "bg-blue-300" },
+                    { name: "AI/数据中心HPC (35%)", val: 35, col: "bg-blue-500" },
+                    { name: "汽车与物联网 (25%)", val: 25, col: "bg-blue-400" }
+                ],
+                summary: "<strong>掌握话语权者：</strong> 台积电、长电科技等头部代工/封测厂拥有绝对的一票否决权。"
+            }
+        };
+
+        window.updateValueChain = function(stage) {
+            // Update button styles
+            ['up', 'mid', 'down'].forEach(s => {
+                const btn = document.getElementById('btn-' + s);
+                btn.className = `w-full md:w-1/3 p-4 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg shadow-sm hover:shadow-md hover:border-teal-500 transition`;
+            });
+            const activeBtn = document.getElementById('btn-' + stage);
+            const colorMap = { 'up': 'indigo', 'mid': 'teal', 'down': 'blue' };
+            const col = colorMap[stage];
+            activeBtn.className = `w-full md:w-1/3 p-4 bg-white border-2 border-${col}-500 text-${col}-700 font-bold rounded-lg shadow-sm hover:shadow-md transition`;
+
+            // Render Content
+            const data = vcData[stage];
+            let listHtml = data.list.map(item => `<li class="p-2 bg-${col}-50 rounded border border-${col}-100">${item}</li>`).join('');
+            let bomHtml = data.bom.map(b => `
+                <div class="flex items-center">
+                    <div class="w-36 text-xs font-bold text-slate-600">${b.name}</div>
+                    <div class="flex-1 bg-slate-100 h-3 rounded-full overflow-hidden"><div class="${b.col} h-full" style="width: ${b.val}%"></div></div>
+                </div>
+            `).join('');
+
+            document.getElementById('vc-content').innerHTML = `
+                <div class="flex flex-col md:flex-row gap-6 fade-in">
+                    <div class="w-full md:w-1/2">
+                        <h3 class="text-xl font-bold text-${col}-700 mb-3">${data.title}</h3>
+                        <p class="text-sm text-slate-600 mb-4">${data.desc}</p>
+                        <ul class="space-y-2 text-sm text-slate-700">${listHtml}</ul>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <h3 class="text-lg font-bold text-slate-800 mb-3">${data.bomTitle}</h3>
+                        <div class="space-y-3">${bomHtml}</div>
+                        <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded text-xs text-slate-500">
+                            ${data.summary}
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        // --- 5. Market Share Doughnut Chart (Module 5) ---
+        const ctxShare = document.getElementById('shareChart').getContext('2d');
+        window.myShareChart = new Chart(ctxShare, {
+            type: 'doughnut',
+            data: {
+                labels: ['Namics (日)', 'Henkel (德)', 'Dexter/Hysol (美/德)', 'Zymet (美)', '国内及其他'],
+                datasets: [{
+                    data: [45, 20, 15, 10, 10],
+                    backgroundColor: [
+                        '#0d9488', // Teal
+                        '#334155', // Slate
+                        '#64748b', // Slate light
+                        '#cbd5e1', // Slate lighter
+                        '#f59e0b'  // Amber (Others)
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } },
+                    tooltip: { callbacks: { label: function(c) { return ' ' + c.label + ': ' + c.raw + '%'; } } }
+                }
+            }
+        });
+
+        // --- 6. Tech Radar Chart (Module 6) ---
+        const ctxRadar = document.getElementById('techRadarChart').getContext('2d');
+        window.myRadarChart = new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['量产成熟度', '极小间距穿透力', '生产效率(UPH)', '成本控制', '热膨胀控制(CTE)'],
+                datasets: [
+                    {
+                        label: 'CUF (毛细底填)',
+                        data: [9, 5, 4, 6, 8],
+                        fill: true,
+                        backgroundColor: 'rgba(13, 148, 136, 0.2)',
+                        borderColor: '#0d9488',
+                        pointBackgroundColor: '#0d9488',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#0d9488'
+                    },
+                    {
+                        label: 'MUF (塑封底填)',
+                        data: [6, 7, 9, 8, 7],
+                        fill: true,
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: '#6366f1', // Indigo
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#6366f1'
+                    },
+                    {
+                        label: 'WLUF (晶圆级)',
+                        data: [4, 9, 8, 3, 9],
+                        fill: true,
+                        backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                        borderColor: '#a855f7', // Purple
+                        pointBackgroundColor: '#a855f7',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#a855f7'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                        grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                        pointLabels: { font: { size: 10, family: "'Noto Sans SC', sans-serif" } },
+                        ticks: { display: false, min: 0, max: 10 }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
