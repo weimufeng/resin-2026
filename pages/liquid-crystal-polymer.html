@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深度行业报告：液晶聚合物 (LCP) 全景图谱与投资逻辑</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+            overflow-x: hidden;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+        }
+        .nav-btn.active {
+            background-color: #E0F2FE;
+            color: #0369A1;
+            font-weight: 700;
+            border-right: 4px solid #0284C7;
+        }
+        .section-view {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .section-view.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #0284C7;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #E2E8F0;
+        }
+        .value-chain-node {
+            transition: all 0.3s ease;
+        }
+        .value-chain-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #0284C7;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- Chosen Palette: Slate & Sky Blue (Background: Slate-50, Text: Slate-800, Accents: Sky-600) -->
+    <!-- Application Structure Plan: The SPA uses a dashboard-style layout with a persistent sidebar (or top scrollable nav on mobile) and a dynamic main content area. This structure allows users to jump directly to specific analysis modules without endless scrolling. The flow is logical: High-level summary -> Industry Basics -> Market Data -> Deep dives (Value Chain/Competition/Tech) -> Risks & Investments. Interactive charts and hover-reveal components are used to condense complex data (like value chains and material comparisons) into digestible visual bites. -->
+    <!-- Visualization & Content Choices: 1. Exec Summary uses KPI metric cards (Goal: Quick facts, Interaction: Hover lift). 2. Market Size uses Bar/Line combo chart in Chart.js (Goal: Show volume + growth trend, Interaction: Tooltip). 3. Value Chain uses HTML/CSS Grid with hover states (Goal: Map upstream to downstream, Interaction: Hover to see key players/bottlenecks. Avoids SVG/Mermaid). 4. Competition uses Doughnut chart (Goal: Show CR5 concentration, Interaction: Tooltip breakdown). 5. Tech Roadmap uses Radar chart (Goal: Multi-dimensional comparison of LCP vs PI vs MPI, Interaction: Toggle layers). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <nav class="w-full md:w-64 bg-white shadow-lg z-10 flex-shrink-0 md:h-screen sticky top-0 md:overflow-y-auto">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-2xl font-bold text-slate-800 tracking-tight">LCP行业深度洞察</h1>
+            <p class="text-xs text-slate-500 mt-2">2024-2028 战略分析报告</p>
+        </div>
+        <div class="flex md:flex-col overflow-x-auto md:overflow-x-visible py-4" id="nav-container">
+            <button class="nav-btn active text-left px-6 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal" data-target="s-summary">一、 执行摘要</button>
+            <button class="nav-btn text-left px-6 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal" data-target="s-overview">二、 行业概况与属性</button>
+            <button class="nav-btn text-left px-6 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal" data-target="s-market">三、 市场规模与需求</button>
+            <button class="nav-btn text-left px-6 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal" data-target="s-chain">四、 产业链全景图谱</button>
+            <button class="nav-btn text-left px-6 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal" data-target="s-compete">五、 竞争格局与护城河</button>
+            <button class="nav-btn text-left px-6 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal" data-target="s-tech">六、 技术路径与趋势</button>
+            <button class="nav-btn text-left px-6 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal" data-target="s-risk">七、 政策环境与风险</button>
+            <button class="nav-btn text-left px-6 py-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal" data-target="s-invest">八、 结论与投资逻辑</button>
+        </div>
+    </nav>
+
+    <main class="flex-1 p-6 md:p-12 overflow-y-auto">
+        
+        <section id="s-summary" class="section-view active">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">执行摘要 (Executive Summary)</h2>
+                <p class="text-slate-600 leading-relaxed bg-white p-4 rounded-lg shadow-sm border border-slate-100">本模块浓缩了LCP（液晶聚合物）行业最核心的研判。作为5.5G/6G时代、AI服务器及高阶汽车电子的核心底层材料，LCP正迎来从传统注塑件向高端薄膜/纤维形态跨越的二次爆发期。</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card p-6 rounded-xl border-l-4 border-l-sky-500">
+                    <div class="text-sky-600 text-sm font-bold mb-1">行业生命周期</div>
+                    <div class="text-2xl font-bold text-slate-800 mb-2">成长期 (结构性分化)</div>
+                    <p class="text-sm text-slate-500">传统注塑级步入成熟期；薄膜级（FCCL用）与纤维级正处于高速成长的早期导入阶段。</p>
+                </div>
+                <div class="glass-card p-6 rounded-xl border-l-4 border-l-emerald-500">
+                    <div class="text-emerald-600 text-sm font-bold mb-1">投资建议 / 评价</div>
+                    <div class="text-2xl font-bold text-slate-800 mb-2">强烈建议战略配置</div>
+                    <p class="text-sm text-slate-500">行业具备“高壁垒+强需求”双击属性。重点关注具备“树脂合成-薄膜制备”一体化量产能力的国产龙头。</p>
+                </div>
+                <div class="glass-card p-6 rounded-xl border-l-4 border-l-purple-500">
+                    <div class="text-purple-600 text-sm font-bold mb-1">市场预期差异</div>
+                    <div class="text-2xl font-bold text-slate-800 mb-2">AI服务器增量被低估</div>
+                    <p class="text-sm text-slate-500">市场多关注手机天线，但AI算力带来的PCIe 5.0/6.0及DDR5高速连接器对低介电LCP的需求将迎爆发。</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 text-white rounded-xl p-6 shadow-lg">
+                <h3 class="text-lg font-bold mb-4 text-sky-400">Top 3 关键词驱动因子</h3>
+                <div class="flex flex-col space-y-4">
+                    <div class="flex items-start">
+                        <span class="text-2xl mr-4">&#10102;</span>
+                        <div>
+                            <h4 class="font-bold text-lg">高频高速化 (High-Frequency & High-Speed)</h4>
+                            <p class="text-slate-300 text-sm">5.5G/6G及AI数据中心要求极低的信号损耗（低Dk/Df），LCP在毫米波频段优势绝对，不可替代性增强。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-2xl mr-4">&#10103;</span>
+                        <div>
+                            <h4 class="font-bold text-lg">薄膜化瓶颈突破 (Film Processing Breakthrough)</h4>
+                            <p class="text-slate-300 text-sm">LCP成膜难度极大（各向异性易撕裂）。全球产能受限，掌握双向拉伸或吹膜核心工艺的企业将享有巨大溢价。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-2xl mr-4">&#10104;</span>
+                        <div>
+                            <h4 class="font-bold text-lg">国产替代深化 (Domestic Substitution)</h4>
+                            <p class="text-slate-300 text-sm">地缘政治及供应链安全倒逼国内终端大厂转向本土供应商，从低端改性塑料向高端树脂原粉及薄膜逆向渗透。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="s-overview" class="section-view">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">行业概况与基本属性</h2>
+                <p class="text-slate-600 leading-relaxed bg-white p-4 rounded-lg shadow-sm border border-slate-100">本模块界定了LCP的研究边界，梳理了其作为“超级工程塑料”的发展历程与核心商业逻辑。了解材料属性是理解其应用爆发的前提。</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">定义与分类边界</h3>
+                    <p class="text-slate-600 mb-4 text-sm leading-relaxed">
+                        <strong class="text-slate-800">LCP (Liquid Crystal Polymer)</strong>，即液晶聚合物，是一类在一定条件下既有液体流动性又保留晶体分子有序排列的特种高分子材料。宏观表现为极高的耐热性、极低的吸水率、出色的尺寸稳定性以及卓越的高频介电性能。
+                    </p>
+                    <div class="space-y-3">
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <span class="font-bold text-sky-600 block mb-1">I型 (高温型 LCP)</span>
+                            <span class="text-sm text-slate-600">热变形温度>300℃。主要用于航空航天、特种电子。加工极难。</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <span class="font-bold text-emerald-600 block mb-1">II型 (中温型 LCP) - 核心研究对象</span>
+                            <span class="text-sm text-slate-600">热变形温度240-280℃。综合性能最优，主流电子元器件、天线薄膜主力材料。</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <span class="font-bold text-amber-600 block mb-1">III型 (低温型 LCP)</span>
+                            <span class="text-sm text-slate-600">热变形温度<210℃。加工容易，但耐热性差，多用于传统结构件。</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">商业模式本质</h3>
+                    <div class="flex flex-col h-full justify-start space-y-6">
+                        <div>
+                            <div class="flex items-center mb-2">
+                                <span class="bg-slate-800 text-white text-xs px-2 py-1 rounded mr-2">核心驱动</span>
+                                <span class="font-bold text-slate-800">技术溢价 > 规模效应</span>
+                            </div>
+                            <p class="text-sm text-slate-600">LCP产业链并非简单的加工制造。上游单体合成涉及复杂化学发应，中游聚合配方属于“暗箱技术”（Know-how），成膜环节存在物理力学控制极高门槛。行业盈利核心来源于配方壁垒和工艺良率带来的高毛利，而非单纯的资产周转。</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-sky-50 p-4 rounded-lg text-center">
+                                <div class="text-sky-600 font-bold mb-1">树脂粉料毛利率</div>
+                                <div class="text-2xl font-bold text-slate-800">40% - 50%</div>
+                            </div>
+                            <div class="bg-indigo-50 p-4 rounded-lg text-center">
+                                <div class="text-indigo-600 font-bold mb-1">薄膜级毛利率</div>
+                                <div class="text-2xl font-bold text-slate-800">60% - 80%+</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 mb-6">核心发展历程</h3>
+                <div class="relative pl-6 border-l-2 border-slate-200 space-y-6">
+                    <div class="relative timeline-item">
+                        <span class="text-sm font-bold text-sky-600">1980s - 1990s</span>
+                        <h4 class="font-bold text-slate-800">萌芽与美日垄断</h4>
+                        <p class="text-sm text-slate-600 mt-1">美国Dartco工业公司商业化首款LCP。随后日本宝理、住友化学引入技术并改良，确立了美日双寡头主导全球供应的基础格局，主要应用于精密接插件。</p>
+                    </div>
+                    <div class="relative timeline-item">
+                        <span class="text-sm font-bold text-sky-600">2017 - 2019</span>
+                        <h4 class="font-bold text-slate-800">消费电子元年 (iPhone X 催化)</h4>
+                        <p class="text-sm text-slate-600 mt-1">苹果iPhone X首次采用LCP软板天线（村田制作所供应），解决全面屏下内部空间受限及高频传输问题。LCP一战成名，需求井喷，国内企业开始加速树脂合成布局。</p>
+                    </div>
+                    <div class="relative timeline-item">
+                        <span class="text-sm font-bold text-sky-600">2023 - 未来</span>
+                        <h4 class="font-bold text-slate-800">AI算力与薄膜化爆发</h4>
+                        <p class="text-sm text-slate-600 mt-1">5.5G基站、低轨卫星通信及AI数据中心（GPU间高速互联、背板连接器）推动材料规格升级。国产厂商突破制膜工艺，正式开启全产业链国产替代进程。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="s-market" class="section-view">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">市场规模与需求分析</h2>
+                <p class="text-slate-600 leading-relaxed bg-white p-4 rounded-lg shadow-sm border border-slate-100">本模块通过量化数据展示LCP市场的成长空间。重点揭示传统注塑件市场的稳健增长与高端薄膜/纤维市场的指数级爆发之间的结构性差异。</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">全球LCP树脂需求量预测 (万吨)</h3>
+                    <div class="chart-container">
+                        <canvas id="marketSizeChart"></canvas>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6 rounded-xl shadow-sm">
+                        <div class="text-sm text-slate-300 mb-1">全球市场TAM (2028E)</div>
+                        <div class="text-3xl font-bold mb-4">~12.5 万吨</div>
+                        <div class="text-sm text-slate-300 mb-1">综合复合年均增长率 (CAGR)</div>
+                        <div class="text-3xl font-bold text-sky-400">8.5%</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex-1">
+                        <h3 class="text-md font-bold text-slate-800 mb-3 border-b pb-2">渗透率与细分增速</h3>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-600">传统注塑连接器</span>
+                                <span class="font-bold text-slate-800">CAGR ~5% (成熟红海)</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-600">AI服务器连接器</span>
+                                <span class="font-bold text-emerald-600">CAGR >25% (爆发期)</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="text-slate-600">LCP天线薄膜 (FCCL)</span>
+                                <span class="font-bold text-sky-600">CAGR >18% (导入期加速)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 mb-4">底层需求驱动逻辑</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                        <div class="font-bold text-slate-800 mb-2 flex items-center">
+                            <span class="text-sky-500 mr-2">&#9632;</span> AI算力基建升级
+                        </div>
+                        <p class="text-sm text-slate-600">AI服务器内外部数据传输速率飙升至800G乃至1.6T。传统玻纤板和PI材料无法满足PCIe 5.0插槽、背板高频连接器极低的介电损耗要求，必须大量切换为LCP材料。</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                        <div class="font-bold text-slate-800 mb-2 flex items-center">
+                            <span class="text-emerald-500 mr-2">&#9632;</span> 5.5G/低轨卫星通信
+                        </div>
+                        <p class="text-sm text-slate-600">毫米波频段下信号衰减呈指数级上升。LCP软板不仅在智能终端天线中渗透率继续提升，更在AR/VR轻量化设备、星链地面接收天线阵列中成为刚需。</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                        <div class="font-bold text-slate-800 mb-2 flex items-center">
+                            <span class="text-amber-500 mr-2">&#9632;</span> 汽车电气化与ADAS
+                        </div>
+                        <p class="text-sm text-slate-600">高阶自动驾驶带来的海量数据传输，促使车载以太网、毫米波雷达、高频传感器对高耐热、抗震、低损耗的LCP材料需求激增，单车LCP用量有望提升3倍以上。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="s-chain" class="section-view">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">产业链全景图谱</h2>
+                <p class="text-slate-600 leading-relaxed bg-white p-4 rounded-lg shadow-sm border border-slate-100">本模块解构了LCP上下游产业链。梳理了从基础化工原料到终端电子元件的价值流向，并明确指出了制约行业发展的“卡脖子”环节所在。</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 mb-8 relative">
+                
+                <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200">
+                    <h3 class="text-center font-bold text-slate-700 mb-4 border-b pb-2">上游：化工原料</h3>
+                    <div class="space-y-3">
+                        <div class="value-chain-node bg-white p-3 rounded shadow-sm border border-slate-100 text-center relative group">
+                            <span class="font-bold text-sm">对羟基苯甲酸 (HBA)</span>
+                            <div class="text-xs text-slate-500">主链结构来源，占比最高</div>
+                            <div class="hidden group-hover:block absolute z-10 bg-slate-800 text-white text-xs p-2 rounded -top-10 left-1/2 transform -translate-x-1/2 w-48 shadow-lg">供应充足，国内产能巨大，无瓶颈</div>
+                        </div>
+                        <div class="value-chain-node bg-white p-3 rounded shadow-sm border border-red-200 text-center relative group">
+                            <span class="font-bold text-sm">联苯二酚 (BP)</span>
+                            <div class="text-xs text-red-500">关键单体，供应偏紧</div>
+                            <div class="hidden group-hover:block absolute z-10 bg-slate-800 text-white text-xs p-2 rounded -top-10 left-1/2 transform -translate-x-1/2 w-48 shadow-lg">技术壁垒高，高度依赖进口，是产业链短期制约点之一</div>
+                        </div>
+                        <div class="value-chain-node bg-white p-3 rounded shadow-sm border border-slate-100 text-center relative group">
+                            <span class="font-bold text-sm">对苯二甲酸 (PTA) / NDA</span>
+                            <div class="text-xs text-slate-500">共聚单体</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center justify-center text-slate-300">
+                    <span class="text-3xl">&#10142;</span>
+                </div>
+
+                <div class="flex-1 bg-sky-50 rounded-xl p-4 border border-sky-200">
+                    <h3 class="text-center font-bold text-sky-800 mb-4 border-b border-sky-200 pb-2">中游：材料合成与加工</h3>
+                    <div class="space-y-3">
+                        <div class="value-chain-node bg-white p-3 rounded shadow-sm border border-sky-100 text-center relative group">
+                            <span class="font-bold text-sm text-sky-700">LCP纯树脂合成 (聚合)</span>
+                            <div class="text-xs text-slate-500">核心Know-how：配方与催化剂</div>
+                            <div class="hidden group-hover:block absolute z-10 bg-sky-900 text-white text-xs p-2 rounded -top-12 left-1/2 transform -translate-x-1/2 w-48 shadow-lg">美日双寡头主导。国内金发科技、沃特股份已实现万吨级突破。</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="value-chain-node flex-1 bg-white p-2 rounded shadow-sm border border-sky-100 text-center relative group cursor-pointer">
+                                <span class="font-bold text-xs">改性塑料</span>
+                                <div class="text-[10px] text-slate-500">加玻纤注塑</div>
+                                <div class="hidden group-hover:block absolute z-10 bg-sky-900 text-white text-xs p-2 rounded -bottom-10 left-1/2 transform -translate-x-1/2 w-32 shadow-lg">竞争激烈，门槛相对较低</div>
+                            </div>
+                            <div class="value-chain-node flex-1 bg-red-50 p-2 rounded shadow-sm border border-red-300 text-center relative group cursor-pointer">
+                                <span class="font-bold text-xs text-red-600">LCP薄膜 (膜级)</span>
+                                <div class="text-[10px] text-red-500">极致卡脖子环节</div>
+                                <div class="hidden group-hover:block absolute z-10 bg-red-900 text-white text-xs p-2 rounded -bottom-16 left-1/2 transform -translate-x-1/2 w-48 shadow-lg">核心瓶颈！吹膜法/流延法设备受限，成膜良率极低。村田几乎垄断高端膜。</div>
+                            </div>
+                            <div class="value-chain-node flex-1 bg-white p-2 rounded shadow-sm border border-sky-100 text-center relative group cursor-pointer">
+                                <span class="font-bold text-xs">LCP纤维</span>
+                                <div class="text-[10px] text-slate-500">特种防弹/航天</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center justify-center text-slate-300">
+                    <span class="text-3xl">&#10142;</span>
+                </div>
+
+                <div class="flex-1 bg-slate-800 rounded-xl p-4 border border-slate-700">
+                    <h3 class="text-center font-bold text-white mb-4 border-b border-slate-600 pb-2">下游：终端应用</h3>
+                    <div class="space-y-3">
+                        <div class="value-chain-node bg-slate-700 p-3 rounded shadow-sm border border-slate-600 text-center">
+                            <span class="font-bold text-sm text-sky-300">电子元器件/连接器 (70%)</span>
+                            <div class="text-xs text-slate-300">Type-C, DDR5卡槽, FPC连接器</div>
+                        </div>
+                        <div class="value-chain-node bg-slate-700 p-3 rounded shadow-sm border border-slate-600 text-center">
+                            <span class="font-bold text-sm text-emerald-300">高频天线/FCCL板 (15%)</span>
+                            <div class="text-xs text-slate-300">苹果终端软板, 毫米波雷达基板</div>
+                        </div>
+                        <div class="value-chain-node bg-slate-700 p-3 rounded shadow-sm border border-slate-600 text-center">
+                            <span class="font-bold text-sm text-amber-300">汽车电子/其他 (15%)</span>
+                            <div class="text-xs text-slate-300">传感器件, 扬声器振膜, 手表表圈</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+                <h4 class="font-bold text-red-800 mb-2">核心痛点剖析：为什么LCP薄膜如此难做？</h4>
+                <p class="text-sm text-red-700 leading-relaxed">
+                    LCP分子呈现刚性棒状结构。在熔融挤出制膜时，分子链极易沿挤出方向高度取向（排队）。这导致薄膜在纵向（MD）强度极大，但在横向（TD）极其脆弱，**极易像劈柴一样纵向撕裂**。必须采用极其复杂的双向拉伸或多层吹膜设备及热处理工艺，相关精密制膜设备长期面临海外出口管制与技术封锁。
+                </p>
+            </div>
+        </section>
+
+        <section id="s-compete" class="section-view">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">竞争格局与护城河</h2>
+                <p class="text-slate-600 leading-relaxed bg-white p-4 rounded-lg shadow-sm border border-slate-100">本模块分析行业竞争生态。全球LCP市场呈现高度集中的寡头垄断特征，但伴随地缘摩擦和成本压力，国内龙头企业正迎来产能扩张与份额抢占的历史机遇期。</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">全球LCP树脂产能格局 (CR5 > 70%)</h3>
+                    <div class="chart-container flex-1">
+                        <canvas id="marketShareChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 text-center mt-4">数据来源：行业研报估算，产能集中在日本(超40%)与美国(近30%)</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">五力模型分析 (Five Forces)</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-bold text-slate-700">现有竞争 (中等偏高)</span>
+                                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded">中</span>
+                            </div>
+                            <p class="text-xs text-slate-600">高端薄膜级极度缺乏，传统注塑级存在价格战趋势。中低端产能过剩，高端一膜难求。</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-bold text-slate-700">潜在进入者 (较低)</span>
+                                <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded">低</span>
+                            </div>
+                            <p class="text-xs text-slate-600">资金密集+技术密集。从聚合实验到量产良率爬坡需要5-8年周期，环保审批极为严格。</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-bold text-slate-700">替代品威胁 (中等)</span>
+                                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded">中</span>
+                            </div>
+                            <p class="text-xs text-slate-600">MPI（改性聚酰亚胺）在中低频段替代LCP（成本优势），但在5G高频毫米波频段LCP无可替代。</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-bold text-slate-700">供应商议价力 (较高)</span>
+                                <span class="px-2 py-0.5 bg-red-100 text-red-800 text-xs rounded">高</span>
+                            </div>
+                            <p class="text-xs text-slate-600">核心单体如联苯二酚(BP)高度依赖特定化工巨头，原材料价格波动直接侵蚀LCP企业利润。</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-bold text-slate-700">客户议价力 (分化)</span>
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">分化</span>
+                            </div>
+                            <p class="text-xs text-slate-600">对接苹果/华为等终端巨头议价力弱；但对于高端薄膜产品，材料厂处于强势卖方市场。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-slate-800 mb-4">重点企业梯队画像</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse bg-white shadow-sm rounded-lg overflow-hidden">
+                    <thead>
+                        <tr class="bg-slate-800 text-white">
+                            <th class="p-3 text-sm font-bold">梯队</th>
+                            <th class="p-3 text-sm font-bold">代表企业</th>
+                            <th class="p-3 text-sm font-bold">核心壁垒与特征</th>
+                            <th class="p-3 text-sm font-bold">产品侧重点</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                            <td class="p-3 font-bold text-sky-600">第一梯队 (海外寡头)</td>
+                            <td class="p-3">塞拉尼斯(美), 宝理塑料(日), 住友化学(日)</td>
+                            <td class="p-3">掌握最底层单体与专利，产能极大，占据全球主导定价权。</td>
+                            <td class="p-3">全品类，主打高端改性、精密注塑。</td>
+                        </tr>
+                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                            <td class="p-3 font-bold text-red-600">薄膜霸主 (垄断级)</td>
+                            <td class="p-3">村田制作所 (Murata, 日)</td>
+                            <td class="p-3">具备唯一【树脂-薄膜-FCCL-天线模组】全产业链闭环能力。</td>
+                            <td class="p-3">苹果供应链唯一核心膜/模组供应商。</td>
+                        </tr>
+                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                            <td class="p-3 font-bold text-emerald-600">国产领军者</td>
+                            <td class="p-3">金发科技, 沃特股份, 普利特</td>
+                            <td class="p-3">依托庞大内需工程师红利，突破树脂合成量产瓶颈，成本优势显著。</td>
+                            <td class="p-3">从中低端注塑向低Dk/Df高端树脂突破。</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-3 font-bold text-emerald-600">国产薄膜新锐</td>
+                            <td class="p-3">信维通信, 宁波建长, 鼎龙股份</td>
+                            <td class="p-3">巨资引进或自研双向拉伸制膜线，正处于向大客户送样验证的爆发前夜。</td>
+                            <td class="p-3">LCP天线薄膜 (国产替代最强音)。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="s-tech" class="section-view">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">技术路径与研发趋势</h2>
+                <p class="text-slate-600 leading-relaxed bg-white p-4 rounded-lg shadow-sm border border-slate-100">高频传输材料的终局之战。本模块横向对比当前主流软板基材，并前瞻了未来有望改变行业格局的新一代技术路线。</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">软板基材多维性能对比 (分数越高越优)</h3>
+                    <div class="chart-container">
+                        <canvas id="techRadarChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-center">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 border-b pb-2">主流材料技术路线对决</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex items-center mb-2">
+                                <span class="bg-slate-200 text-slate-700 px-2 py-1 text-xs font-bold rounded mr-2">传统 PI (聚酰亚胺)</span>
+                                <span class="text-sm font-bold text-red-500">即将被淘汰出高端局</span>
+                            </div>
+                            <p class="text-sm text-slate-600">吸水率高导致高频下损耗极大，仅能用于4G及低频非关键结构件。</p>
+                        </div>
+                        <div>
+                            <div class="flex items-center mb-2">
+                                <span class="bg-amber-100 text-amber-800 px-2 py-1 text-xs font-bold rounded mr-2">过渡 MPI (改性 PI)</span>
+                                <span class="text-sm font-bold text-amber-600">高性价比的妥协方案</span>
+                            </div>
+                            <p class="text-sm text-slate-600">通过引入含氟基团改善了PI的性能。在15GHz频率以下性能接近LCP，且加工成本低得多。是中低阶5G手机的主流选择。</p>
+                        </div>
+                        <div>
+                            <div class="flex items-center mb-2">
+                                <span class="bg-sky-100 text-sky-800 px-2 py-1 text-xs font-bold rounded mr-2">终局 LCP</span>
+                                <span class="text-sm font-bold text-sky-600">高频及毫米波绝对霸主</span>
+                            </div>
+                            <p class="text-sm text-slate-600">在15GHz以上毫米波频段，传输损耗极小（Df低于0.002）。虽成本高、加工难，但在算力与高频时代不可替代。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 text-white p-6 rounded-xl shadow-sm">
+                <h3 class="text-lg font-bold mb-4 text-emerald-400">颠覆性技术预测 (未来3-5年)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border border-slate-600 p-4 rounded-lg bg-slate-700">
+                        <h4 class="font-bold text-sky-300 mb-2">可溶性 LCP (Soluble LCP)</h4>
+                        <p class="text-sm text-slate-300">传统LCP不溶不熔，只能通过高温挤出成膜，良率低。研发可通过特定溶剂溶解的LCP，采用类似PI的“涂布法”制膜，将彻底打破高昂的设备和工艺壁垒，降低制造成本50%以上。</p>
+                    </div>
+                    <div class="border border-slate-600 p-4 rounded-lg bg-slate-700">
+                        <h4 class="font-bold text-sky-300 mb-2">铁氟龙(PTFE) 与 LCP的混合改性</h4>
+                        <p class="text-sm text-slate-300">PTFE的介电损耗比LCP更低，但极难加工且无法电镀。将微粉化PTFE与LCP熔融共混，试图结合两者优势，这是未来下一代AI服务器极高速连接器背板的终极材料攻关方向。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="s-risk" class="section-view">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">政策环境与宏观风险</h2>
+                <p class="text-slate-600 leading-relaxed bg-white p-4 rounded-lg shadow-sm border border-slate-100">对外部环境的敏感度分析。新材料行业发展受地缘政治、技术迭代速度及大宗商品价格多重交织影响。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-emerald-100">
+                    <h3 class="text-xl font-bold text-emerald-700 mb-4 border-b border-emerald-100 pb-2 flex items-center">
+                        <span class="mr-2 text-2xl">&#9873;</span> 政策导向与红利
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-emerald-500 mr-2 mt-1">&#10003;</span>
+                            <div>
+                                <span class="font-bold text-sm text-slate-800">《新材料产业发展指南》定调</span>
+                                <p class="text-xs text-slate-600 mt-1">LCP被明确列入国家关键战略材料名录。地方政府在高端化工园区批复、能耗双控指标上对LCP项目给予“绿色通道”和税收倾斜。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-emerald-500 mr-2 mt-1">&#10003;</span>
+                            <div>
+                                <span class="font-bold text-sm text-slate-800">“卡脖子”攻关补贴</span>
+                                <p class="text-xs text-slate-600 mt-1">工信部强基工程直接针对5G用高端高频覆铜板及薄膜级LCP树脂，提供巨额研发补贴及首批次应用保险补偿机制。</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-red-100">
+                    <h3 class="text-xl font-bold text-red-700 mb-4 border-b border-red-100 pb-2 flex items-center">
+                        <span class="mr-2 text-2xl">&#9888;</span> 核心风险提示
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 mt-1">&#10007;</span>
+                            <div>
+                                <span class="font-bold text-sm text-slate-800">技术迭代被“超车”的风险</span>
+                                <p class="text-xs text-slate-600 mt-1">MPI改性技术若取得超预期突破，将显著拉升其可用频率上限，可能蚕食LCP在Sub-6G及部分毫米波市场的份额。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 mt-1">&#10007;</span>
+                            <div>
+                                <span class="font-bold text-sm text-slate-800">贸易摩擦与设备断供</span>
+                                <p class="text-xs text-slate-600 mt-1">高端LCP薄膜制造极度依赖进口双拉设备（如德国布鲁克纳、日本相关企业）。若遭遇极端出口管制，国产化进程将被物理锁死。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 mt-1">&#10007;</span>
+                            <div>
+                                <span class="font-bold text-sm text-slate-800">单体原料价格剧烈波动</span>
+                                <p class="text-xs text-slate-600 mt-1">BP等核心单体价格受石油价格及特定国际厂商开工率影响。国内一体化程度不高的树脂企业易面临毛利被两头挤压的困境。</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="s-invest" class="section-view">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">结论与投资逻辑</h2>
+                <p class="text-slate-600 leading-relaxed bg-white p-4 rounded-lg shadow-sm border border-slate-100">从产业逻辑向资本市场映射。总结行业的核心制胜因子，给出当前资本环境下的估值框架与差异化投资视点。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-gradient-to-br from-sky-800 to-indigo-900 p-6 rounded-xl shadow-lg text-white">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="text-2xl mr-2">&#127919;</span> 关键成功要素 (KSF)
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
+                            <div class="font-bold text-sky-300 mb-1">1. 产业链一体化能力</div>
+                            <p class="text-sm text-slate-200">只有具备“上游改性单体调配 -> 专用纯树脂合成 -> 高良率制膜”垂直整合能力的企业，才能在苹果/华为等链条中夺取高额利润。单纯买树脂做注塑没有护城河。</p>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-lg backdrop-blur-sm">
+                            <div class="font-bold text-sky-300 mb-1">2. 终端大厂的认证壁垒</div>
+                            <p class="text-sm text-slate-200">材料导入验证周期长达2-3年。与英伟达(AI连接器)或苹果(FCCL)形成早期联合研发（JDA）绑定的企业，具备显著先发排他优势。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">估值水平与方法</h3>
+                    <div class="space-y-5">
+                        <div>
+                            <span class="block text-sm font-bold text-slate-700">成熟期业务 (改性注塑级 LCP)</span>
+                            <div class="flex items-center mt-1">
+                                <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded text-sm font-mono mr-3">P/E 估值法</span>
+                                <span class="text-sm text-slate-500">合理估值区间：15x - 20x。按化工及新材料制造属性稳健定价。</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block text-sm font-bold text-slate-700">导入/爆发期业务 (高端薄膜级 / AI服务器级)</span>
+                            <div class="flex items-center mt-1">
+                                <span class="bg-sky-100 text-sky-700 px-3 py-1 rounded text-sm font-mono mr-3">P/S 或 PEG 估值</span>
+                                <span class="text-sm text-slate-500">合理估值区间：P/S 5x-8x 或享有极高成长溢价。视同核心半导体材料给予估值。</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded text-sm border border-slate-100 mt-4 text-slate-600">
+                            <strong class="text-slate-800">当前位置：</strong> 随新能源及大盘整体回调，目前国内LCP头部标的估值处于历史<span class="font-bold text-sky-600">20%极低分位</span>，安全边际极高。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                <h3 class="text-lg font-bold text-amber-900 mb-3 flex items-center">
+                    <span class="text-2xl mr-2">&#128161;</span> 差异化观点 (市场共识之外的陷阱与机会)
+                </h3>
+                <ul class="space-y-3 text-sm text-amber-800">
+                    <li><strong class="font-bold">盲区机会：</strong> 市场过度执着于“手机天线软板何时爆发”，而忽略了 <strong>AI光模块与高速连接器</strong> 对LCP需求的确定性增量。服务器对成本敏感度低于消费电子，是高毛利突破口。</li>
+                    <li><strong class="font-bold">扩产陷阱：</strong> 警惕部分企业公告的“万吨级产能规划”。LCP是典型的“产能不等于有效产量”行业。低端注塑产能过剩无法转化为盈利，<strong class="underline">有效的高端制膜级树脂良率</strong> 才是跟踪核心。</li>
+                    <li><strong class="font-bold">并购重组预期：</strong> LCP制膜的壁垒极高，传统化工巨头很难依靠自身内生研发跨界。未来2年内，掌握核心配方的团队被大厂高溢价并购整合将成为行业常态。</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="mt-12 text-center text-sm text-slate-400 border-t border-slate-100 pt-6">
+            <p>基于公开研报、文献及市场数据整合分析合成验证分析报告 | 互动展示页面</p>
+        </footer>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.section-view');
+
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const targetId = btn.getAttribute('data-target');
+                    sections.forEach(sec => {
+                        sec.classList.remove('active');
+                        if(sec.id === targetId) {
+                            sec.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { family: "'Noto Sans SC', sans-serif" } } },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleFont: { family: "'Noto Sans SC', sans-serif", size: 14 },
+                        bodyFont: { family: "'Noto Sans SC', sans-serif", size: 13 },
+                        padding: 10,
+                        cornerRadius: 4
+                    }
+                }
+            };
+
+            const ctxSize = document.getElementById('marketSizeChart').getContext('2d');
+            new Chart(ctxSize, {
+                type: 'bar',
+                data: {
+                    labels: ['2023', '2024E', '2025E', '2026E', '2027E', '2028E'],
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: '市场规模需求量 (万吨)',
+                            data: [8.5, 9.1, 9.8, 10.6, 11.5, 12.5],
+                            backgroundColor: '#0284C7',
+                            borderRadius: 4,
+                            order: 2
+                        },
+                        {
+                            type: 'line',
+                            label: '同比增速 YoY (%)',
+                            data: [6.5, 7.0, 7.6, 8.1, 8.4, 8.6],
+                            borderColor: '#10B981',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#10B981',
+                            pointRadius: 4,
+                            yAxisID: 'y1',
+                            tension: 0.3,
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            title: { display: true, text: '需求量 (万吨)' },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        y1: { 
+                            beginAtZero: true, 
+                            position: 'right', 
+                            title: { display: true, text: '增速 (%)' },
+                            grid: { drawOnChartArea: false }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            const ctxShare = document.getElementById('marketShareChart').getContext('2d');
+            new Chart(ctxShare, {
+                type: 'doughnut',
+                data: {
+                    labels: ['塞拉尼斯 (美国)', '宝理塑料 (日本)', '住友化学 (日本)', '沃特/金发等 (中国)', '其他'],
+                    datasets: [{
+                        data: [28, 22, 18, 15, 17],
+                        backgroundColor: ['#0284C7', '#0369A1', '#0EA5E9', '#10B981', '#CBD5E1'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+
+            const ctxRadar = document.getElementById('techRadarChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['高频传输(低损耗)', '低吸水率', '尺寸稳定性', '加工便利性', '低成本', '柔韧性(折叠)'],
+                    datasets: [
+                        {
+                            label: 'LCP (液晶聚合物)',
+                            data: [9.5, 9, 9.5, 3, 2, 8],
+                            backgroundColor: 'rgba(2, 132, 199, 0.2)',
+                            borderColor: '#0284C7',
+                            pointBackgroundColor: '#0284C7',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'MPI (改性 PI)',
+                            data: [7, 7, 7, 7, 6, 9],
+                            backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                            borderColor: '#F59E0B',
+                            pointBackgroundColor: '#F59E0B',
+                            borderWidth: 2
+                        },
+                        {
+                            label: '传统 PI',
+                            data: [3, 2, 5, 9, 9, 8],
+                            backgroundColor: 'rgba(100, 116, 139, 0.2)',
+                            borderColor: '#64748B',
+                            pointBackgroundColor: '#64748B',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#E2E8F0' },
+                            grid: { color: '#E2E8F0' },
+                            pointLabels: {
+                                font: { family: "'Noto Sans SC', sans-serif", size: 12 },
+                                color: '#475569'
+                            },
+                            ticks: { display: false, min: 0, max: 10 }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
